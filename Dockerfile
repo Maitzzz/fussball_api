@@ -1,10 +1,7 @@
 FROM google/nodejs
 
-RUN npm install forever -g
-WORKDIR /app
-ADD package.json /app/
-RUN npm install
-ADD . /app
+MAINTAINER Mait Roosvalt <maitroosvalt@gmail.com>
+
+RUN /nodejs/bin/npm install -g nodemon
 
 CMD []
-ENTRYPOINT ["/nodejs/bin/npm", "start"]

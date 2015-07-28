@@ -1,22 +1,21 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'install' ]
+1 verbose cli [ '/nodejs/bin/node',
+1 verbose cli   '/nodejs/bin/npm',
+1 verbose cli   'start',
+1 verbose cli   'node',
+1 verbose cli   'app.js' ]
 2 info using npm@1.4.28
-3 info using node@v0.10.39
-4 verbose node symlink /usr/bin/node
-5 error install Couldn't read dependencies
-6 error Failed to parse json
-6 error Unexpected token }
-7 error File: /var/www/html/fussball_api/app/package.json
-8 error Failed to parse package.json data.
-8 error package.json must be actual JSON, not just JavaScript.
-8 error
-8 error This is not a bug in npm.
-8 error Tell the package author to fix their package.json file. JSON.parse
-9 error System Linux 3.13.0-43-generic
-10 error command "/usr/bin/node" "/usr/bin/npm" "install"
-11 error cwd /var/www/html/fussball_api/app
-12 error node -v v0.10.39
-13 error npm -v 1.4.28
-14 error file /var/www/html/fussball_api/app/package.json
-15 error code EJSONPARSE
-16 verbose exit [ 1, true ]
+3 info using node@v0.10.40
+4 error Error: ENOENT, open '/app/node_modules/node/package.json'
+5 error If you need help, you may report this *entire* log,
+5 error including the npm and node versions, at:
+5 error     <http://github.com/npm/npm/issues>
+6 error System Linux 3.13.0-43-generic
+7 error command "/nodejs/bin/node" "/nodejs/bin/npm" "start" "node" "app.js"
+8 error cwd /app
+9 error node -v v0.10.40
+10 error npm -v 1.4.28
+11 error path /app/node_modules/node/package.json
+12 error code ENOENT
+13 error errno 34
+14 verbose exit [ 34, true ]

@@ -4,8 +4,6 @@ exports.attach = function (options) {
 
   app.db = new Sequelize(app.conf.db.database, app.conf.db.user, app.conf.db.password, { host: app.conf.db.host });
 
-
-
   app.use(require('./models/test.js'));
   app.use(require('./models/testlist.js'));
 
