@@ -1,0 +1,11 @@
+{
+  "app": {
+    "port": 4040,
+    "db": {
+      "database": "test",
+      "user": "root",
+      "password": "root",
+      "host": "mysqld"
+    }
+  }
+}

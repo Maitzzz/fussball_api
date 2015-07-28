@@ -1,0 +1,28 @@
+node:
+  ports:
+    - "4040:4040"
+  image: google/nodejs
+  working_dir: /app
+  command: node app.js
+  volumes:
+    - ./app:/app
+  links:
+      - mysqld
+mysqld:
+  image: fenomen/mysqld:latest
+  hostname: mysqld
+  volumes_from:
+    - mysqlddata
+mysqlddata:
+  image: fenomen/data:latest
+  hostname: mysqlddata
+  volumes:
+    - /mysqld
+phpmyadmin:
+  image: fenomen/phpmyadmin:latest
+  hostname: phpmyadmin
+  ports:
+    - "80"
+    - "443"
+  links:
+    - mysqld
