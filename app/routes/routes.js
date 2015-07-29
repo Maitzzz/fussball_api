@@ -18,4 +18,8 @@ exports.attach = function (options) {
       res.json(connections);
     });
   });
+
+  app.server.get("/", function (req, res) {
+    res.json({ Success: "Welcome to api" });
+  });
 };

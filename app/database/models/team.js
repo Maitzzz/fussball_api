@@ -2,13 +2,13 @@ exports.attach = function(options) {
   var app = this;
   var Sequelize = require('sequelize');
 
-  app.test = app.db.define('test', {
+  app.team = app.db.define('team', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
-    },
-    testname: Sequelize.STRING
+    }
   });
 
-}
+  app.team.hasMany(app.user, { trough: 'team_users' });
+};

@@ -9,7 +9,7 @@ exports.attach = function (options) {
 
 
   setTimeout(function() {
-    app.db.sync().then(function(err, res) {
+    app.db.sync({ truncate: true }).then(function(err, res) {
       if(err) {
         console.error(err);
       } else {
