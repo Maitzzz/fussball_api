@@ -7,8 +7,14 @@ exports.attach = function(options) {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
+    },
+
+    player_one: {
+      type: Sequelize.INTEGER
+    },
+
+    player_two: {
+      type: Sequelize.INTEGER
     }
   });
-
-  app.team.hasMany(app.user, { trough: 'team_users' });
 };

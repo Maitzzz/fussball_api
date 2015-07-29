@@ -2,24 +2,16 @@ exports.attach = function(options) {
   var app = this;
   var Sequelize = require('sequelize');
 
-  app.match = app.db.define('match', {
+  app.goal = app.db.define('goal', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
-    start: {
-      type: Sequelize.TIME
-    },
-    end: {
-      type: Sequelize.TIME
-    },
-    side: {
-      type: Sequelize.STRING
-    },
-    winning_team: {
+    owner: {
       type: Sequelize.INTEGER
     }
   });
 
+  app.goal.belongsTo(app.match);
 };

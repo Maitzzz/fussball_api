@@ -1,9 +1,9 @@
 node:
   ports:
     - "4040:4040"
-  image: mroosvalt/nodemon
+  image: google/nodejs
   working_dir: /app
-  command: nodemon app.js
+  command: node app.js
   volumes:
     - ./app:/app
   links:

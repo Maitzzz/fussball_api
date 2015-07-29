@@ -4,12 +4,18 @@ exports.attach = function (options) {
 
   app.db = new Sequelize(app.conf.db.database, app.conf.db.user, app.conf.db.password, { host: app.conf.db.host });
 
-  app.use(require('./models/test.js'));
-  app.use(require('./models/testlist.js'));
+  /*app.use(require('./models/user.js'));
+  app.use(require('./models/goal.js'));
+  app.use(require('./models/team.js'));
+  app.use(require('./models/match.js'));
+  app.use(require('./models/game.js'));
+  */
+
+  app.use(require('./models/models.js'));
 
 
   setTimeout(function() {
-    app.db.sync({ truncate: true }).then(function(err, res) {
+    app.db.sync({ force: true }).then(function(err, res) {
       if(err) {
         console.error(err);
       } else {
@@ -17,11 +23,4 @@ exports.attach = function (options) {
       }
     })
   }, 5000)
-
-  /*
-    app.use(require('./models/consumer.js'));
-    app.use(require('./models/connection.js'));
-    app.use(require('./models/timer.js'));
-    app.use(require('./models/user.js'));
-  */
 };
