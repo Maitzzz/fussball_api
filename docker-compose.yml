@@ -1,9 +1,8 @@
 node:
   ports:
     - "4040:4040"
-  image: google/nodejs
+  image: mroosval/nodemon
   working_dir: /app
-  command: node app.js
   volumes:
     - ./app:/app
   links:
@@ -13,11 +12,15 @@ mysqld:
   hostname: mysqld
   volumes_from:
     - mysqlddata
+  environment:
+    - VHOST=fussball
 mysqlddata:
   image: fenomen/data:latest
   hostname: mysqlddata
   volumes:
     - /mysqld
+  environment:
+    - VHOST=fussball
 phpmyadmin:
   image: fenomen/phpmyadmin:latest
   hostname: phpmyadmin
@@ -26,3 +29,5 @@ phpmyadmin:
     - "443"
   links:
     - mysqld
+  environment:
+    - VHOST=fussbal

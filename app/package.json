@@ -1,11 +1,12 @@
 {
   "name": "server",
   "dependencies": {
+    "bluebird": "^2.10.0",
     "body-parser": "*",
-    "express": "*",
-    "mysql": "*",
-    "sequelize": "*",
     "broadway": "^0.3.6",
-    "config": "^1.12.0"
+    "config": "^1.12.0",
+    "express": "*",
+    "mysql": "~2.0.0-alpha7",
+    "sequelize": "*"
   }
 }

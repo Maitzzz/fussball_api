@@ -2,7 +2,7 @@ exports.attach = function(options) {
   var app = this;
   var Sequelize = require('sequelize');
 
-  app.user = app.db.define('users', {
+  app.user = app.db.define('user', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,

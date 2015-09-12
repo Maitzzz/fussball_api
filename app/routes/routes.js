@@ -1,16 +1,13 @@
 exports.attach = function (options) {
   var app = this;
 
-  app.server.post("/test", function (req, res) {
-    var test = {};
-
-    test.testname = req.body.name;
-
-    app.test.create(test).then(function(tests) {
-        res.json(tests);
+  app.server.get("/test", function (req, res) {
+    var players = {};
+    app.game.creategame(players, function(ret) {
+      console.log("ret")
+      console.log(ret);
+      res.json(ret);
     });
-
-    res.json({ Success: "Success!?" })
   });
 
   app.server.get("/tests", function(req, res) {
@@ -20,6 +17,6 @@ exports.attach = function (options) {
   });
 
   app.server.get("/", function (req, res) {
-    res.json({ Success: "Welcome to api" });
+    res.json({ Success: "31231ddsaddassWi" });
   });
 };

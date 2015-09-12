@@ -10,8 +10,9 @@ exports.attach = function(options) {
     },
     owner: {
       type: Sequelize.INTEGER
+    },
+    match: {
+      type: Sequelize.INTEGER
     }
   });
-
-  app.goal.belongsTo(app.match);
 };

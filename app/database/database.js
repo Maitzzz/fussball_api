@@ -4,17 +4,13 @@ exports.attach = function (options) {
 
   app.db = new Sequelize(app.conf.db.database, app.conf.db.user, app.conf.db.password, { host: app.conf.db.host });
 
-  /*app.use(require('./models/user.js'));
+  app.use(require('./models/user.js'));
   app.use(require('./models/goal.js'));
   app.use(require('./models/team.js'));
   app.use(require('./models/match.js'));
   app.use(require('./models/game.js'));
-  */
 
-  app.use(require('./models/models.js'));
-
-
-  setTimeout(function() {
+/*  setTimeout(function() {
     app.db.sync({ force: true }).then(function(err, res) {
       if(err) {
         console.error(err);
@@ -22,5 +18,5 @@ exports.attach = function (options) {
         console.log(res);
       }
     })
-  }, 5000)
+  }, 5000)*/
 };

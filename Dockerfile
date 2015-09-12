@@ -1,7 +1,17 @@
-FROM google/nodejs
+FROM ubuntu
 
-MAINTAINER Mait Roosvalt <maitroosvalt@gmail.com>
+RUN apt-get update --fix-missing
+RUN apt-get install -yq curl
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-RUN /nodejs/bin/npm install -g nodemon
+# NVM
+RUN curl -sL https://deb.nodesource.com/setup | sudo bash - && \
+  apt-get install -y nodejs
 
-CMD []
+#VOLUME ./app:/nodeapp
+ADD     app /nodeapp
+WORKDIR /nodeapp
+
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh && \
+  npm install -g nodemon mocha supervisor
+CMD ["nodemon", "/app/app.js"]

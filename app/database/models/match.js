@@ -8,12 +8,6 @@ exports.attach = function(options) {
       autoIncrement: true,
       primaryKey: true
     },
-    start: {
-      type: Sequelize.TIME
-    },
-    end: {
-      type: Sequelize.TIME
-    },
     side: {
       type: Sequelize.STRING
     },
@@ -21,5 +15,4 @@ exports.attach = function(options) {
       type: Sequelize.INTEGER
     }
   });
-
 };
