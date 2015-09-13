@@ -1,27 +1,43 @@
 exports.attach = function (options) {
   var app = this;
 
-  app.server.get("/test", function (req, res) {
-    app.goal.goalScored(1,1, function(ret) {
-      res.json(ret);
+  app.server.get('/games', app.cors(), function (req, res, next) {
+    app.game.findAll().then(function (games) {
+      res.json(games);
+    })
+  });
+
+  app.server.get('/creategame', app.cors(), function (req, res) {
+    app.game.createGame({}, function (err, ret) {
+      res.json({
+        game: ret
+      })
+    })
+  });
+
+  app.server.get('/game/:id', app.cors(), function (req, res) {
+    app.game.getGameDataById(req.params.id, function(err, ret) {
+      res.json(ret)
     });
   });
 
-  app.server.get("/addgoal", function (req, res) {
+  app.server.get('/test', app.cors(), function (req, res) {
+    app.game.getCurrentGameData(function(err, game) {
+      res.json(game);
+    })
+  });
+
+  app.server.get('/addmatch', app.cors(), function (req, res) {
+    app.match.create({
+      game: 8
+    })
+  });
+
+  app.server.get('/addgoal', app.cors(), function (req, res) {
     app.goal.create({
-      match: 1,
-      owner: 1
+      match: 2,
+      owner: 1,
+      team: 13
     });
-    res.json('tete');
-  });
-
-  app.server.get("/tests", function(req, res) {
-    app.test.findAll().then(function(connections) {
-      res.json(connections);
-    });
-  });
-
-  app.server.get("/", function (req, res) {
-    res.json({ Success: "31231ddsaddassWi" });
   });
 };

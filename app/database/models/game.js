@@ -1,6 +1,8 @@
 exports.attach = function (options) {
   var app = this;
   var Sequelize = require('sequelize');
+  var eachAsync = require('each-async');
+  var _ = require('lodash-node');
 
   app.game = app.db.define('game', {
     id: {
@@ -40,24 +42,62 @@ exports.attach = function (options) {
               team2: team2.id
             }).then(function (game) {
               if (game.id) {
-                app.match.newMatch(game.id, function(match) {
-                  console.log(game.id);
-                  callback(false ,game.id, match.id);
-                });
+                app.match.create({
+                  game: game.id
+                }).then(function (match) {
+                  callback(false, game.id, match.id);
+                })
               }
               return false;
             });
           });
         });
       },
-      getCurrentGame: function(callback) {
-        app.db.query('SELECT id, winning_team FROM games ORDER BY id DESC LIMIT 1',{ type: Sequelize.QueryTypes.SELECT}).then(function(res)  {
-          console.log(res[0].winning_team);
-          if(res[0].winning_team != null) {
+      getCurrentGame: function (callback) {
+        app.db.query('SELECT id, winning_team FROM games ORDER BY id DESC LIMIT 1', {type: Sequelize.QueryTypes.SELECT}).then(function (res) {
+          if (res[0].winning_team == null) {
             callback(false, res[0].id);
           } else {
             callback(false, true);
           }
+        });
+      },
+
+      getCurrentGameData: function (callback) {
+        app.game.getCurrentGame(function (err, gameId) {
+          app.game.getGameDataById(gameId, function(err, game) {
+            callback(false, game);
+          })
+        })
+      },
+
+      getGameDataById: function(id, callback) {
+        var data = {};
+        var matchesData = []
+        app.game.findById(id).then(function (game) {
+          app.match.findAll({
+            where: {
+              game: id
+            }
+          }).then(function (matches) {
+            data.game = game.dataValues;
+            eachAsync(matches, function (item, index, done) {
+              app.goal.findAll({
+                where: {
+                  match: item.id
+                }
+              }).then(function (goals) {
+                var match = item.dataValues;
+                match.goals = goals;
+
+                matchesData.push(match)
+                done();
+              });
+            }, function(error) {
+              data.matches = matchesData;
+              callback(false, data);
+            });
+          });
         });
       }
     }

@@ -1,15 +1,13 @@
 exports.attach = function (options) {
   var app = this;
   var Sequelize = require('sequelize');
+  var _ = require('lodash-node');
 
   app.match = app.db.define('match', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
-    },
-    side: {
-      type: Sequelize.STRING
     },
     winning_team: {
       type: Sequelize.INTEGER
@@ -21,11 +19,13 @@ exports.attach = function (options) {
     classMethods: {
       newMatch: function (callback) {
         app.game.getCurrentGame(function (err, gameId) {
-          app.match.count({
+          app.match.findAll({
             where: {
               game: gameId
             }
-          }).then(function (ret) {
+          }).then(function (matches) {
+            var teamMatches = _.groupBy(matches, 'winning_team');
+
 
           });
         });
@@ -46,7 +46,26 @@ exports.attach = function (options) {
             //todo Game not found or ended.
           }
         });
+      },
+
+      getMatchData: function(callback) {
+        app.match.getCurrentMatch(function (match) {
+          callback(false, match);
+        })
+      },
+      setWinningTeam: function(match, team, callback) {
+        app.match.update({
+          winning_team: team
+        }, {
+          where: {
+            id: match
+          }
+        }).then(function(ret) {
+          callback(false, ret);
+        })
       }
     }
   });
 };
+
+//todo check if data is set

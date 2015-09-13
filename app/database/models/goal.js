@@ -14,24 +14,23 @@ exports.attach = function (options) {
     match: {
       type: Sequelize.INTEGER
     },
-    side: {
+    team: {
       type: Sequelize.INTEGER
     }
   }, {
     classMethods: {
-      goalScored: function (side, owner, callback) {
+      goalScored: function (team, owner, callback) {
         //todo error handling
         app.match.getCurrentMatch(function (err, match) {
           app.goal.count({
             where: {
               match: match,
-              side: side
+              team: team
             }
           }).then(function (count) {
             if (count == 10) {
-              app.match.newMatch({
-
-              });
+              app.match.setWinningTeam(match, team);
+              app.match.newMatch({});
             } else {
               app.goal.create( {
                 owner: owner,
@@ -46,4 +45,5 @@ exports.attach = function (options) {
     }
   });
 };
-//todo create method to find player side
+
+//todo create method to find player team
