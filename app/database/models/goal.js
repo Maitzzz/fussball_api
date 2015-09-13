@@ -22,24 +22,28 @@ exports.attach = function (options) {
       goalScored: function (team, owner, callback) {
         //todo error handling
         app.match.getCurrentMatch(function (err, match) {
-          app.goal.count({
-            where: {
+          if (match) {
+            app.goal.create({
+              owner: owner,
               match: match,
               team: team
-            }
-          }).then(function (count) {
-            if (count == 10) {
-              app.match.setWinningTeam(match, team);
-              app.match.newMatch({});
-            } else {
-              app.goal.create( {
-                owner: owner,
-                match: match
+            }).then(function (data) {
+              app.goal.count({
+                where: {
+                  match: match,
+                  team: team
+                }
+              }).then(function (count) {
+                console.log('count ' + count)
+                if (count == 10) {
+                  app.match.setWinningTeam(match, team);
+                  app.match.newMatch();
+                }
+              }).then(function (goal) {
+                callback(false, goal);
               });
-            }
-          }).then(function(goal) {
-            callback(false, goal);
-          });
+            });
+          } else (callback(false, {message: "Match has already winner"}));
         });
       }
     }

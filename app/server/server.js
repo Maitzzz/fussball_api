@@ -7,6 +7,14 @@ exports.attach = function (options) {
 
   app.server.use(bodyParser.json());
 
+  app.server.use(function(req, res, next) {
+    console.log('test');
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
   app.use(require('../routes/routes.js'));
 };
 

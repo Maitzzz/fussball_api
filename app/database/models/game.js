@@ -90,7 +90,13 @@ exports.attach = function (options) {
                 var match = item.dataValues;
                 match.goals = goals;
 
-                matchesData.push(match)
+                var test = _.countBy(goals, function(a) {
+                  return a.team;
+                });
+
+                match.stats = test;
+
+                matchesData.push(match);
                 done();
               });
             }, function(error) {
@@ -99,6 +105,17 @@ exports.attach = function (options) {
             });
           });
         });
+      },
+      setWinningTeam: function(game, team, callback) {
+        app.game.update({
+          winning_team: team
+        }, {
+          where: {
+            id: game
+          }
+        }).then(function(ret) {
+          callback(false, ret);
+        })
       }
     }
   });

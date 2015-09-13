@@ -24,9 +24,21 @@ exports.attach = function (options) {
               game: gameId
             }
           }).then(function (matches) {
-            var teamMatches = _.groupBy(matches, 'winning_team');
+            var ret = _.countBy(matches, function (a) {
+              return a.winning_team;
+            });
 
-
+            _.forEach(ret, function(item, key) {
+              if(item == 2) {
+                app.game.setWinningTeam(gameId, key, function(err, ret) {
+                  callback(false, ret);
+                });
+              } else {
+                app.match.create({
+                  game: gameId
+                })
+              }
+            });
           });
         });
       },
@@ -34,13 +46,17 @@ exports.attach = function (options) {
       getCurrentMatch: function (callback) {
         app.game.getCurrentGame(function (err, gameId) {
           if (gameId) {
-            app.match.findAll({
+            app.match.findOne({
               where: {
                 game: gameId,
                 winning_team: null
               }
             }).then(function (match) {
-              callback(false, match.id);
+              if(_.has(match, 'id')) {
+                callback(false, match.id);
+              } else {
+                callback(false, false);
+              }
             })
           } else {
             //todo Game not found or ended.
