@@ -36,14 +36,17 @@ exports.attach = function (options) {
               }).then(function (count) {
                 console.log('count ' + count)
                 if (count == 10) {
-                  app.match.setWinningTeam(match, team);
-                  app.match.newMatch();
+                  app.match.setWinningTeam(match, team, function(err, ret) {
+                    app.match.newMatch(function(ret) {
+                      console.log('Win!')
+                    });
+                  });
                 }
               }).then(function (goal) {
                 callback(false, goal);
               });
             });
-          } else (callback(false, {message: "Match has already winner"}));
+          } else (callback(false, false));
         });
       }
     }

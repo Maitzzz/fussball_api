@@ -58,7 +58,7 @@ exports.attach = function (options) {
           if (res[0].winning_team == null) {
             callback(false, res[0].id);
           } else {
-            callback(false, true);
+            callback(false, false);
           }
         });
       },

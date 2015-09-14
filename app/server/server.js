@@ -3,6 +3,8 @@ exports.attach = function (options) {
 
   var bodyParser = require('body-parser');
   var express = require('express');
+  var _ = require('lodash-node');
+
   app.server = express();
 
   app.server.use(bodyParser.json());

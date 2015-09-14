@@ -28,9 +28,9 @@ exports.attach = function (options) {
               return a.winning_team;
             });
 
-            _.forEach(ret, function(item, key) {
-              if(item == 2) {
-                app.game.setWinningTeam(gameId, key, function(err, ret) {
+            _.forEach(ret, function (value, key) {
+              if (value == 2) {
+                app.game.setWinningTeam(gameId, key, function (err, ret) {
                   callback(false, ret);
                 });
               } else {
@@ -52,31 +52,31 @@ exports.attach = function (options) {
                 winning_team: null
               }
             }).then(function (match) {
-              if(_.has(match, 'id')) {
+              if (match.id) {
                 callback(false, match.id);
               } else {
                 callback(false, false);
               }
             })
           } else {
-            //todo Game not found or ended.
+            callback(false, false)
           }
         });
       },
 
-      getMatchData: function(callback) {
+      getMatchData: function (callback) {
         app.match.getCurrentMatch(function (match) {
           callback(false, match);
         })
       },
-      setWinningTeam: function(match, team, callback) {
+      setWinningTeam: function (match, team, callback) {
         app.match.update({
           winning_team: team
         }, {
           where: {
             id: match
           }
-        }).then(function(ret) {
+        }).then(function (ret) {
           callback(false, ret);
         })
       }
