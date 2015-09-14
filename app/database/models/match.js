@@ -1,7 +1,6 @@
 exports.attach = function (options) {
   var app = this;
   var Sequelize = require('sequelize');
-  var _ = require('lodash-node');
 
   app.match = app.db.define('match', {
     id: {
@@ -24,21 +23,9 @@ exports.attach = function (options) {
               game: gameId
             }
           }).then(function (matches) {
-            var ret = _.countBy(matches, function (a) {
-              return a.winning_team;
-            });
-
-            _.forEach(ret, function (value, key) {
-              if (value == 2) {
-                app.game.setWinningTeam(gameId, key, function (err, ret) {
-                  callback(false, ret);
-                });
-              } else {
-                app.match.create({
-                  game: gameId
-                })
-              }
-            });
+            app.match.createNewMatch(gameId, matches, function (err, newMatch) {
+              callback(err, newMatch);
+            })
           });
         });
       },
@@ -69,6 +56,7 @@ exports.attach = function (options) {
           callback(false, match);
         })
       },
+
       setWinningTeam: function (match, team, callback) {
         app.match.update({
           winning_team: team
@@ -79,6 +67,29 @@ exports.attach = function (options) {
         }).then(function (ret) {
           callback(false, ret);
         })
+      },
+      createNewMatch: function (gameId, matches, callback) {
+        app.game.findById(gameId).then(function (game) {
+          if (!game.winning_team) {
+            var ret = app._.countBy(matches, function (a) {
+              return a.winning_team;
+            });
+
+            var winning_team = app.findKey(ret, 2);
+
+            if (winning_team) {
+              app.game.setWinningTeam(gameId, winning_team, function(err, ret) {
+                callback(false, ret);
+              });
+            } else {
+              app.match.create({
+                game: gameId
+              }).then(function(newMatch) {
+                callback(false, newMatch);
+              });
+            }
+          }
+        });
       }
     }
   });

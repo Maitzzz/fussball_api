@@ -1,5 +1,6 @@
 exports.attach = function (options) {
   var app = this;
+  var _ = require('lodash-node');
 
   app.server.get('/games', function (req, res, next) {
     app.game.findAll().then(function (games) {
@@ -7,7 +8,14 @@ exports.attach = function (options) {
     })
   });
 
+  app.server.get('/game', function (req, res, next) {
+    app.game.getCurrentGameData(function (err, game) {
+      res.json(game);
+    })
+  });
+
   app.server.get('/creategame', function (req, res) {
+
     app.game.createGame({}, function (err, ret) {
       res.json({
         game: ret
@@ -22,21 +30,15 @@ exports.attach = function (options) {
   });
 
   app.server.get('/test', function (req, res) {
-    app.match.newMatch(function(err, game) {
-      res.json(game);
-    })
+    app.user.prioritizePlayers({}, function(err, ret){
+      res.json(ret);
+    });
   });
 
   app.server.get('/test2', function (req, res) {
     app.match.create({
       winning_team: 332232,
       game:10
-    })
-  });
-
-  app.server.get('/addmatch', function (req, res) {
-    app.match.create({
-      game: 8
     })
   });
 
@@ -49,7 +51,6 @@ exports.attach = function (options) {
       }
     })
   });
-
   app.server.get('/team/:id', function(req, res) {
     app.team.findById(req.params.id).then(function(team) {
       res.json(team)

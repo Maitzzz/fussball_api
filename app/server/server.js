@@ -6,7 +6,6 @@ exports.attach = function (options) {
   var _ = require('lodash-node');
 
   app.server = express();
-
   app.server.use(bodyParser.json());
 
   app.server.use(function(req, res, next) {

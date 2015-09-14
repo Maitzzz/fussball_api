@@ -4,7 +4,6 @@ RUN apt-get update --fix-missing
 RUN apt-get install -yq curl
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# NVM
 RUN curl -sL https://deb.nodesource.com/setup | sudo bash - && \
   apt-get install -y nodejs
 

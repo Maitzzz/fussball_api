@@ -65,13 +65,17 @@ exports.attach = function (options) {
 
       getCurrentGameData: function (callback) {
         app.game.getCurrentGame(function (err, gameId) {
-          app.game.getGameDataById(gameId, function(err, game) {
-            callback(false, game);
-          })
-        })
+          if (gameId) {
+            app.game.getGameDataById(gameId, function (err, game) {
+              callback(false, game);
+            })
+          } else {
+            callback(false, { error: 409 ,message: 'Currently there are no game in progress!'})
+          }
+        });
       },
 
-      getGameDataById: function(id, callback) {
+      getGameDataById: function (id, callback) {
         var data = {};
         var matchesData = []
         app.game.findById(id).then(function (game) {
@@ -90,7 +94,7 @@ exports.attach = function (options) {
                 var match = item.dataValues;
                 match.goals = goals;
 
-                var test = _.countBy(goals, function(a) {
+                var test = _.countBy(goals, function (a) {
                   return a.team;
                 });
 
@@ -99,24 +103,44 @@ exports.attach = function (options) {
                 matchesData.push(match);
                 done();
               });
-            }, function(error) {
+            }, function (error) {
               data.matches = matchesData;
               callback(false, data);
             });
           });
         });
       },
-      setWinningTeam: function(game, team, callback) {
+      setWinningTeam: function (game, team, callback) {
         app.game.update({
           winning_team: team
         }, {
           where: {
             id: game
           }
-        }).then(function(ret) {
+        }).then(function (ret) {
           callback(false, ret);
         })
+      },
+
+      drawGame: function(players, callback) {
+        app.user.prioritizePlayers(players, function (err, ret) {
+          
+        })
+      },
+
+      getGames: function(start, end, callback) {
+        app.game.findAndCount({
+          where: {
+            createdAt: {
+              $between: [start, end]
+            }
+          }
+        }).then(function(games) {
+          console.log(games)
+          callback(false, games);
+        });
       }
     }
   });
 };
+

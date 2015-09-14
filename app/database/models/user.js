@@ -18,5 +18,22 @@ exports.attach = function(options) {
     active: {
       type: Sequelize.BOOLEAN
     }
+  }, {
+    classMethods: {
+      getUserGames: function(start, end, callback) {
+
+      },
+
+      prioritizePlayers: function(players, callback) {
+        var end = new Date();
+        var start = app.getPeriod();
+
+        app.game.getGames(start, end, function (err, games) {
+          if(!err) {
+            callback(false, games);
+          }
+        });
+      }
+    }
   });
 };

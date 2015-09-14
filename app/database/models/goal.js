@@ -34,11 +34,9 @@ exports.attach = function (options) {
                   team: team
                 }
               }).then(function (count) {
-                console.log('count ' + count)
                 if (count == 10) {
                   app.match.setWinningTeam(match, team, function(err, ret) {
                     app.match.newMatch(function(ret) {
-                      console.log('Win!')
                     });
                   });
                 }
