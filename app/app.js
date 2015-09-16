@@ -86,13 +86,13 @@ app.compressArray = function(original) {
     if (myCount > 0) {
 
       var a = new Object();
-      a.value = original[i];
+      a.player = original[i];
       a.count = myCount;
       compressed.push(a);
     }
   }
 
-  var ret = app._.sortBy(compressed, 'count');
 
-  return ret;
+
+  return compressed;
 };

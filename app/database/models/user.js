@@ -28,9 +28,16 @@ exports.attach = function (options) {
         var end = new Date();
         var start = app.getPeriod();
         app.user.getPlayerGamesCountInPeriod(end, start, function(err, ret) {
+          // get 4 last counts
+          var participating = [];
+          app._.forEach(ret, function(value) {
+            console.log(value.player + 'dsadsadasdsa')
+            if (app._.indexOf(players, value.player) > 0) {
+              participating.push(value);
+            }
+          });
 
-
-          callback(false, ret)
+          callback(false, participating)
         });
       },
       getPlayerGamesCountInPeriod: function(end, start,callback) {
