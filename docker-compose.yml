@@ -30,4 +30,4 @@ phpmyadmin:
   links:
     - mysqld
   environment:
-    - VHOST=fussbal
+    - VHOST=fussball

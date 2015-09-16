@@ -29,12 +29,12 @@ exports.attach = function (options) {
     classMethods: {
       createGame: function (players, callback) {
         app.team.create({
-          player_one: 1,
-          player_two: 2
+          player_one: 67,
+          player_two: 45
         }).then(function (team1) {
           app.team.create({
-            player_one: 3,
-            player_two: 4
+            player_one: 43,
+            player_two: 94
           }).then(function (team2) {
             app.game.create({
               start: new Date().toLocaleString(),
