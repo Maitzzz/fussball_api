@@ -11,7 +11,7 @@ exports.attach = function (options) {
   app.use(require('./models/game.js'));
 
 
-  setTimeout(function() {
+  /*setTimeout(function() {
     app.db.sync({ force: true }).then(function(err, res) {
       if(err) {
         console.error(err);
@@ -19,5 +19,5 @@ exports.attach = function (options) {
         console.log(res);
       }
     })
-  }, 5000)
+  }, 5000)*/
 };

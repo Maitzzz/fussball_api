@@ -5,7 +5,7 @@ exports.attach = function (options) {
   var _ = require('lodash-node');
 
   app.game = app.db.define('game', {
-    game_id: {
+    id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
@@ -54,7 +54,7 @@ exports.attach = function (options) {
         });
       },
       getCurrentGame: function (callback) {
-        app.db.query('SELECT game_id, winning_team FROM games ORDER BY game_id DESC LIMIT 1', {type: Sequelize.QueryTypes.SELECT}).then(function (res) {
+        app.db.query('SELECT id, winning_team FROM games ORDER BY id DESC LIMIT 1', {type: Sequelize.QueryTypes.SELECT}).then(function (res) {
           if (res[0].winning_team == null) {
             callback(false, res[0].id);
           } else {
@@ -129,23 +129,7 @@ exports.attach = function (options) {
       },
 
       getGames: function (start, end, callback) {
-        /*app.game.findAndCount({
-         where: {
-         createdAt: {
-         $between: [start, end]
-         }
-         }
-         }).then(function(games) {
-         console.log(games)
-         callback(false, games);
-         });*/
-
-        app.game.find({
-          include: [
-            {
-              model: app.team, as: 'team'
-            }
-          ],
+        app.game.findAndCount({
           where: {
             createdAt: {
               $between: [start, end]
@@ -153,7 +137,8 @@ exports.attach = function (options) {
           }
         }).then(function (games) {
           callback(false, games);
-        })
+        });
+
       }
     }
   });
