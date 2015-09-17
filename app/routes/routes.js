@@ -14,13 +14,16 @@ exports.attach = function (options) {
     })
   });
 
-  app.server.get('/creategame', function (req, res) {
+  app.server.get('/newgame', function (req, res) {
+    app.game.drawGame(players, function(err, ret){
+      app.game.createGame(players, function (err, ret) {
+        res.json({
+          game: ret
+        });
+      });
+    });
 
-    app.game.createGame({}, function (err, ret) {
-      res.json({
-        game: ret
-      })
-    })
+
   });
 
   app.server.get('/game/:id', function (req, res) {
@@ -30,9 +33,7 @@ exports.attach = function (options) {
   });
 
   app.server.get('/test', function (req, res) {
-    app.user.prioritizePlayers({}, function(err, ret){
-      res.json(ret);
-    });
+
   });
 
   app.server.get('/test2', function (req, res) {

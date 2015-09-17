@@ -3,6 +3,8 @@ exports.attach = function (options) {
   var eachAsync = require('each-async');
   var Sequelize = require('sequelize');
 
+
+
   app.user = app.db.define('user', {
     user_id: {
       type: Sequelize.INTEGER,
@@ -22,22 +24,19 @@ exports.attach = function (options) {
   }, {
     classMethods: {
       prioritizePlayers: function (players, callback) {
-        var playersInMatch = 4;
-        players = [1, 2, 3, 4, 43, 67];
-
         var end = new Date();
         var start = app.getPeriod();
         app.user.getPlayerGamesCountInPeriod(end, start, function(err, ret) {
           // get 4 last counts
-          var participating = [];
-          app._.forEach(ret, function(value) {
-            console.log(value.player + 'dsadsadasdsa')
-            if (app._.indexOf(players, value.player) > 0) {
-              participating.push(value);
+          var inGame = [];
+          app._.forEach(ret, function(val) {
+            if (app._.indexOf(players, val.player) != -1) {
+              inGame.push(val);
             }
           });
+          var temp = app._.sortByOrder(app._.shuffle(inGame), ['count'], ['asc']);
 
-          callback(false, participating)
+          callback(false, temp)
         });
       },
       getPlayerGamesCountInPeriod: function(end, start,callback) {

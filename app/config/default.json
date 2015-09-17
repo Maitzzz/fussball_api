@@ -6,6 +6,7 @@
       "user": "root",
       "password": "root",
       "host": "mysqld"
-    }
+    },
+    "players_in_game": 4
   }
 }

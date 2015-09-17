@@ -5,145 +5,162 @@ exports.attach = function (options) {
   var _ = require('lodash-node');
 
   app.game = app.db.define('game', {
-    id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
-    },
-    start: {
-      type: Sequelize.TIME
-    },
-    end: {
-      type: Sequelize.TIME
-    },
-    winning_team: {
-      type: Sequelize.INTEGER
-    },
-    team1: {
-      type: Sequelize.INTEGER
-    },
-    team2: {
-      type: Sequelize.INTEGER
-    }
-  }, {
-    classMethods: {
-      createGame: function (players, callback) {
-        app.team.create({
-          player_one: 67,
-          player_two: 45
-        }).then(function (team1) {
-          app.team.create({
-            player_one: 43,
-            player_two: 94
-          }).then(function (team2) {
-            app.game.create({
-              start: new Date().toLocaleString(),
-              team1: team1.id,
-              team2: team2.id
-            }).then(function (game) {
-              if (game.id) {
-                app.match.create({
-                  game: game.id
-                }).then(function (match) {
-                  callback(false, game.id, match.id);
-                })
-              }
-              return false;
-            });
-          });
-        });
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
       },
-      getCurrentGame: function (callback) {
-        app.db.query('SELECT id, winning_team FROM games ORDER BY id DESC LIMIT 1', {type: Sequelize.QueryTypes.SELECT}).then(function (res) {
-          if (res[0].winning_team == null) {
-            callback(false, res[0].id);
-          } else {
-            callback(false, false);
-          }
-        });
+      start: {
+        type: Sequelize.TIME
       },
-
-      getCurrentGameData: function (callback) {
-        app.game.getCurrentGame(function (err, gameId) {
-          if (gameId) {
-            app.game.getGameDataById(gameId, function (err, game) {
-              callback(false, game);
-            })
-          } else {
-            callback(false, {error: 409, message: 'Currently there are no game in progress!'})
-          }
-        });
+      end: {
+        type: Sequelize.TIME
       },
-
-      getGameDataById: function (id, callback) {
-        var data = {};
-        var matchesData = []
-        app.game.findById(id).then(function (game) {
-          app.match.findAll({
-            where: {
-              game: id
-            }
-          }).then(function (matches) {
-            data.game = game.dataValues;
-            eachAsync(matches, function (item, index, done) {
-              app.goal.findAll({
-                where: {
-                  match: item.id
-                }
-              }).then(function (goals) {
-                var match = item.dataValues;
-                match.goals = goals;
-
-                var test = _.countBy(goals, function (a) {
-                  return a.team;
+      winning_team: {
+        type: Sequelize.INTEGER
+      },
+      team1: {
+        type: Sequelize.INTEGER
+      },
+      team2: {
+        type: Sequelize.INTEGER
+      }
+    }, {
+      classMethods: {
+        createGame: function (players, callback) {
+          if (players.length >= app.conf.players_in_game) {
+            app.team.create({
+              player_one: players[0],
+              player_two: players[1]
+            }).then(function (team1) {
+              app.team.create({
+                player_one: players[2],
+                player_two: players[3]
+              }).then(function (team2) {
+                app.game.create({
+                  start: new Date().toLocaleString(),
+                  team1: team1.id,
+                  team2: team2.id
+                }).then(function (game) {
+                  if (game.id) {
+                    app.match.create({
+                      game: game.id
+                    }).then(function (match) {
+                      callback(false, game.id, match.id);
+                    })
+                  }
+                  return false;
                 });
-
-                match.stats = test;
-
-                matchesData.push(match);
-                done();
               });
-            }, function (error) {
-              data.matches = matchesData;
-              callback(false, data);
+            });
+          }
+        },
+        getCurrentGame: function (callback) {
+          app.db.query('SELECT id, winning_team FROM games ORDER BY id DESC LIMIT 1', {type: Sequelize.QueryTypes.SELECT}).then(function (res) {
+            if (res[0].winning_team == null) {
+              callback(false, res[0].id);
+            } else {
+              callback(false, false);
+            }
+          });
+        },
+
+        getCurrentGameData: function (callback) {
+          app.game.getCurrentGame(function (err, gameId) {
+            if (gameId) {
+              app.game.getGameDataById(gameId, function (err, game) {
+                callback(false, game);
+              })
+            } else {
+              callback(false, {error: 409, message: 'Currently there are no game in progress!'})
+            }
+          });
+        },
+
+        getGameDataById: function (id, callback) {
+          var data = {};
+          var matchesData = [];
+          app.game.findById(id).then(function (game) {
+            app.match.findAll({
+              where: {
+                game: id
+              }
+            }).then(function (matches) {
+              data.game = game.dataValues;
+              eachAsync(matches, function (item, index, done) {
+                app.goal.findAll({
+                  where: {
+                    match: item.id
+                  }
+                }).then(function (goals) {
+                  var match = item.dataValues;
+                  match.goals = goals;
+
+                  var test = _.countBy(goals, function (a) {
+                    return a.team;
+                  });
+
+                  match.stats = test;
+
+                  matchesData.push(match);
+                  done();
+                });
+              }, function (error) {
+                data.matches = matchesData;
+                callback(false, data);
+              });
             });
           });
-        });
-      },
-      setWinningTeam: function (game, team, callback) {
-        app.game.update({
-          winning_team: team
-        }, {
-          where: {
-            id: game
-          }
-        }).then(function (ret) {
-          callback(false, ret);
-        })
-      },
-
-      drawGame: function (players, callback) {
-        app.user.prioritizePlayers(players, function (err, ret) {
-
-        })
-      },
-
-      getGames: function (start, end, callback) {
-        app.game.findAndCount({
-          where: {
-            createdAt: {
-              $between: [start, end]
+        },
+        setWinningTeam: function (game, team, callback) {
+          app.game.update({
+            winning_team: team
+          }, {
+            where: {
+              id: game
             }
-          }
-        }).then(function (games) {
-          callback(false, games);
-        });
+          }).then(function (ret) {
+            callback(false, ret);
+          })
+        },
 
+        drawGame: function (players, callback) {
+          if (players.length >= app.conf.players_in_game) {
+            app.user.prioritizePlayers(players, function (err, ret) {
+              callback(false, ret)
+            });
+          } else {
+            callback(false, {message: 'Not enough players!'});
+          }
+        },
+
+        getGames: function (start, end, callback) {
+          app.game.findAndCount({
+            where: {
+              createdAt: {
+                $between: [start, end]
+              }
+            }
+          }).then(function (games) {
+            callback(false, games);
+          });
+        },
+        newGame: function (players, callback) {
+          app.game.drawGame(players, function (err, ret) {
+            res.json(ret);
+          });
+
+          app.game.createGame({}, function (err, ret) {
+            res.json({
+              game: ret
+            })
+          })
+        }
       }
     }
-  });
+  )
+  ;
 
-  app.game.hasMany(app.team, {foreignKey: 'game_id'});
-  app.team.belongsTo(app.game, {foreignKey: 'game_id'});
-};
+}
+;
 
