@@ -57,10 +57,15 @@ exports.attach = function (options) {
         },
         getCurrentGame: function (callback) {
           app.db.query('SELECT id, winning_team FROM games ORDER BY id DESC LIMIT 1', {type: Sequelize.QueryTypes.SELECT}).then(function (res) {
-            if (res[0].winning_team == null) {
-              callback(false, res[0].id);
+            if (!app.isEmptyObject(res)) {
+              if (res[0].winning_team == null) {
+                callback(false, res[0].id);
+              } else {
+                console.log('sttt23132t')
+                callback(false, false);
+              }
             } else {
-              callback(false, false);
+              callback(true, {error:'Games does not exist'});
             }
           });
         },
@@ -125,12 +130,13 @@ exports.attach = function (options) {
         },
 
         drawGame: function (players, callback) {
+          console.log(players + 'dasda');
           if (players.length >= app.conf.players_in_game) {
             app.user.prioritizePlayers(players, function (err, ret) {
               callback(false, ret)
             });
           } else {
-            callback(false, {message: 'Not enough players!'});
+            callback(true, {message: 'Not enough players!'});
           }
         },
 
