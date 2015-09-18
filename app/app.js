@@ -1,5 +1,6 @@
 var broadway = require('broadway');
 var app = new broadway.App();
+
 app._ = require('lodash-node');
 
 
@@ -49,7 +50,7 @@ app.firstMonday = function (month, year) {
   var day = 0;
 
   if (d.getDay() == 0) {
-    day = 2
+    day = 2;
     d = d.setDate(day);
     d = new Date(d)
   }

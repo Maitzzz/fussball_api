@@ -130,15 +130,21 @@ exports.attach = function (options) {
 
         drawGame: function (players, callback) {
           if (players.length >= app.conf.players_in_game) {
-            app.user.prioritizePlayers(players, function (err, ret) {
-              if (!err) {
-                callback(false, ret)
+            app.game.getCurrentGame(function (err, current_game) {
+              if (!current_game) {
+                app.user.prioritizePlayers(players, function (err, priotitized) {
+                  if (!err) {
+                    app.game.createGame(priotitized, function (err, game) {
+                      callback(false, game)
+                    });
+                  } else {
+                    callback(true, 'Error with proiritizing players');
+                  }
+                });
               } else {
-                callback(false, {message: 'no games found'})
+                callback(true, 'Not enough players!');
               }
             });
-          } else {
-            callback(true, {message: 'Not enough players!'});
           }
         },
 

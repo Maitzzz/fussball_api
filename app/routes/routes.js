@@ -18,21 +18,11 @@ exports.attach = function (options) {
     //todo parse user and check if valid, array_unique
     var players = req.body.players;
     if (players != undefined) {
-      app.game.getCurrentGame(function (err, current_game) {
-        if (!current_game) {
-          app.game.drawGame(players, function (err, prioritized) {
-            if (!err) {
-              app.game.createGame(prioritized, function (err, ret) {
-                res.json({
-                  game: ret
-                });
-              });
-            } else {
-              res.status(400).json(prioritized);
-            }
-          });
+      app.game.drawGame(players, function (err, gameData) {
+        if (err) {
+          res.status(400).json({message: gameData})
         } else {
-          res.status(400).json({error: 'Game is already in progress!'});
+          res.json({game: gameData})
         }
       });
     } else {
@@ -50,7 +40,7 @@ exports.attach = function (options) {
     var end = new Date();
     var start = app.getPeriod();
     var players = [3, 1, 5, 8];
-    app.user.getPlayersGamesCountInPeriod(end, start, players,function (err, ret) {
+    app.user.getPlayersGamesCountInPeriod(end, start, players, function (err, ret) {
       res.json(ret);
     });
   });
@@ -67,7 +57,7 @@ exports.attach = function (options) {
 
   app.server.get('/team/:id', function (req, res) {
     app.team.findById(req.params.id).then(function (team) {
-      res.json(team)
+      res.json(team);
     })
   });
 };
