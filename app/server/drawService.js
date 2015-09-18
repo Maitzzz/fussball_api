@@ -47,7 +47,9 @@ exports.attach = function (options) {
 
   function game_timer_ended() {
     if (players.length >= app.conf.players_in_game) {
+        app.game.drawGame(players, function (err, ret) {
 
+        });
     } else {
       return
     }
