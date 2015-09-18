@@ -3,8 +3,6 @@ exports.attach = function (options) {
   var eachAsync = require('each-async');
   var Sequelize = require('sequelize');
 
-
-
   app.user = app.db.define('user', {
     user_id: {
       type: Sequelize.INTEGER,
@@ -26,7 +24,7 @@ exports.attach = function (options) {
       prioritizePlayers: function (players, callback) {
         var end = new Date();
         var start = app.getPeriod();
-        app.user.getPlayerGamesCountInPeriod(end, start, function(err, ret) {
+        app.user.getPlayersGamesCountInPeriod(end, start,players, function(err, ret) {
           if (!app.isEmptyObject(ret)) {
             var inGame = [];
             app._.forEach(ret, function(val) {
@@ -42,11 +40,10 @@ exports.attach = function (options) {
           }
         });
       },
-      getPlayerGamesCountInPeriod: function(end, start,callback) {
+      getPlayersGamesCountInPeriod: function(end, start, players, callback) {
         app.game.getGames(start, end, function (err, games) {
           if (!err) {
             var teams = [];
-            console.log(games.count);
             eachAsync(games.rows, function (item, index, done) {
               app.team.findById(item.team1).then(function (team1) {
                 teams.push(team1.player_one);
@@ -58,7 +55,16 @@ exports.attach = function (options) {
                 });
               });
             }, function (error) {
-              callback(error, app.compressArray(teams));
+              var players_swap = app.compressArray(teams);
+              app._.forEach(players, function(player) {
+                if(app._.find(players_swap , { player: player}) == undefined) {
+                  players_swap .push({
+                    player: player,
+                    count:0
+                  });
+                }
+              });
+              callback(error, players_swap);
             });
           }
         });
