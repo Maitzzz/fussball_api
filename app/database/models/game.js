@@ -61,11 +61,10 @@ exports.attach = function (options) {
               if (res[0].winning_team == null) {
                 callback(false, res[0].id);
               } else {
-                console.log('sttt23132t')
                 callback(false, false);
               }
             } else {
-              callback(true, {error:'Games does not exist'});
+              callback(true, false);
             }
           });
         },
@@ -130,10 +129,13 @@ exports.attach = function (options) {
         },
 
         drawGame: function (players, callback) {
-          console.log(players + 'dasda');
           if (players.length >= app.conf.players_in_game) {
             app.user.prioritizePlayers(players, function (err, ret) {
-              callback(false, ret)
+              if (!err) {
+                callback(false, ret)
+              } else {
+                callback(true, {message: 'no games found'})
+              }
             });
           } else {
             callback(true, {message: 'Not enough players!'});

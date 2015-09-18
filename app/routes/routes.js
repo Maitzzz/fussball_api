@@ -15,10 +15,10 @@ exports.attach = function (options) {
   });
 
   app.server.post('/newgame', function (req, res) {
+    //todo parse user and check if valid, array_unique
     var players = req.body.players;
-    console.log(players)
     app.game.getCurrentGame(function (err, current_game) {
-      if (!current_game || err) {
+      if (!current_game) {
         app.game.drawGame(players, function (err, prioritized) {
           if (!err) {
             app.game.createGame(prioritized, function (err, ret) {

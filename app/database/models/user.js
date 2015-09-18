@@ -27,16 +27,18 @@ exports.attach = function (options) {
         var end = new Date();
         var start = app.getPeriod();
         app.user.getPlayerGamesCountInPeriod(end, start, function(err, ret) {
-          // get 4 last counts
-          var inGame = [];
-          app._.forEach(ret, function(val) {
-            if (app._.indexOf(players, val.player) != -1) {
-              inGame.push(val);
-            }
-          });
-          var temp = app._.sortByOrder(app._.shuffle(inGame), ['count'], ['asc']);
-
-          callback(false, temp)
+          if (!app.isEmptyObject(ret)) {
+            var inGame = [];
+            app._.forEach(ret, function(val) {
+              if (app._.indexOf(players, val.player) != -1) {
+                inGame.push(val);
+              }
+            });
+            var temp = app._.sortByOrder(app._.shuffle(inGame), ['count'], ['asc']);
+            callback(false, temp);
+          } else {
+            callback(true, {massage: 'No games found'});
+          }
         });
       },
       getPlayerGamesCountInPeriod: function(end, start,callback) {
