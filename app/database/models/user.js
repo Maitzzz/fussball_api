@@ -35,9 +35,10 @@ exports.attach = function (options) {
               }
             });
             var temp = app._.sortByOrder(app._.shuffle(inGame), ['count'], ['asc']);
-            callback(false, temp);
+            console.log(temp);
+            callback(false, app._.pluck(temp, 'player'));
           } else {
-            callback(true, {massage: 'No games found'});
+            callback(false, players);
           }
         });
       },

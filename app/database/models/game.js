@@ -134,7 +134,7 @@ exports.attach = function (options) {
               if (!err) {
                 callback(false, ret)
               } else {
-                callback(true, {message: 'no games found'})
+                callback(false, {message: 'no games found'})
               }
             });
           } else {
