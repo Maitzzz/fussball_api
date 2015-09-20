@@ -51,7 +51,7 @@ exports.attach = function (options) {
 
         });
     } else {
-      return
+      return;
     }
   }
 };
