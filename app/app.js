@@ -2,7 +2,7 @@ var broadway = require('broadway');
 var app = new broadway.App();
 
 app._ = require('lodash-node');
-
+app.winston = require('winston');
 
 app.conf = require('config').get('app');
 app._ = require('lodash-node');
@@ -26,10 +26,7 @@ app.findKey = function(obj, value) {
   return key;
 };
 
-//kolm on väiksem kui viis
-// 3 < 5
 //kui selle kuu esimene esmaspäev on möödas(on väiksem) kui antud hetk, võta selle kuu oma. Kui ei võta eelmise oma.
-
 // todo Write it more generic
 app.getPeriod = function() {
   var start;
@@ -85,16 +82,13 @@ app.compressArray = function(original) {
     }
 
     if (myCount > 0) {
-
       var a = new Object();
       a.player = original[i];
       a.count = myCount;
       compressed.push(a);
     }
   }
-
-
-
+f
   return compressed;
 };
 
@@ -106,3 +100,15 @@ app.isEmptyObject  = function(obj) {
   }
   return true;
 }
+
+// todo find a way to create a module
+app.pushMessages = function(data) {
+ // data consist which driver it sends, payload, data etc.
+  var driver = data.driver;
+  switch (data.driver) {
+    case 'websocket':
+
+  }
+
+
+};

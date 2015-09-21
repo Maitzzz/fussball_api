@@ -1,3 +1,5 @@
+// todo reasearch for logging.
+
 exports.attach = function (options) {
   var app = this;
   var players = [];
@@ -11,20 +13,36 @@ exports.attach = function (options) {
         var i = setInterval(function () {
           time--;
           if (time <= 0) {
-            game_timer_ended();
+            app.timer.game_timer_ended(function(err, ret) {
+              if (err) {
+                app.winston.log('info', 'Error occurred in timer_ended function');
+              } else {
+                var message = {
+                  driver: 'websocket',
+                  settings: {
+                    users: 'all'
+                  },
+                  type:'system',
+                  message: 'game_drawn'
+                };
+
+                app.pushMessages(message);
+              }
+            });
+
             timer_on = false;
             time = 0;
             clearInterval(i);
           }
         }, 1000);
       } else {
-        //todo error message
+        res.status(400).json({ message: 'Game or Draw is on!' });
       }
     })
   });
 
   app.server.get('/timer', function(req, res) {
-    if(timer_on) {
+    if(timer_on && time) {
       res.json(time);
     } else {
       res.status(400).json({message: 'Timer has not started!'});
@@ -45,15 +63,26 @@ exports.attach = function (options) {
     }
   });
 
-  function game_timer_ended() {
+  app.server.get('/get-players', function(req, res) {
+    res.json(players);
+  });
+
+  app.timer.game_timer_ended = function(callback) {
     if (players.length >= app.conf.players_in_game) {
-        app.game.drawGame(players, function (err, ret) {
+      app.winston.log('Players Added to Draw', players);
+      // empty participants array
+      players = [];
 
-        });
+      app.game.drawGame(players, function (err, ret) {
+        if (err) {
+          app.winston.log('Game has been drawn', ret);
+          callback(true, ret);
+        } else {
+          callback(false, ret);
+        }
+      });
     } else {
-      return;
+      callback(false, 'Not enough players!');
     }
-  }
+  };
 };
-
-// todo reasearch for logging.
