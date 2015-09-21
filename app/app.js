@@ -1,6 +1,7 @@
 var broadway = require('broadway');
 var app = new broadway.App();
-
+var WebSocketServer = require('ws').Server;
+app.wss = new WebSocketServer({port: 8080});
 app._ = require('lodash-node');
 app.winston = require('winston');
 
@@ -9,6 +10,8 @@ app._ = require('lodash-node');
 
 app.use(require('./database/database.js'));
 app.use(require('./server/server.js'));
+app.use(require('./server/drawService.js'));
+app.use(require('./server/wss.js'));
 
 app.init(function (err) {
   if (err) console.log(err);
@@ -88,7 +91,7 @@ app.compressArray = function(original) {
       compressed.push(a);
     }
   }
-f
+
   return compressed;
 };
 
@@ -99,16 +102,17 @@ app.isEmptyObject  = function(obj) {
     }
   }
   return true;
-}
+};
 
 // todo find a way to create a module
 app.pushMessages = function(data) {
  // data consist which driver it sends, payload, data etc.
   var driver = data.driver;
+
   switch (data.driver) {
+
     case 'websocket':
-
+      app.wss.broadcast(data.payload);
+      break;
   }
-
-
 };

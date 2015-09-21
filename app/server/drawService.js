@@ -19,11 +19,10 @@ exports.attach = function (options) {
               } else {
                 var message = {
                   driver: 'websocket',
-                  settings: {
-                    users: 'all'
-                  },
                   type:'system',
-                  message: 'game_drawn'
+                  payload: {
+                    message: 'game_drawn'
+                  }
                 };
 
                 app.pushMessages(message);
