@@ -3,7 +3,11 @@ exports.attach = function (options) {
   var _ = require('lodash-node');
 
   app.server.get('/games', function (req, res, next) {
-    app.game.findAll().then(function (games) {
+    app.game.findAll({
+      where:{
+        active: true
+      }
+    }).then(function (games) {
       res.json(games);
     })
   });
@@ -40,9 +44,14 @@ exports.attach = function (options) {
     var end = new Date();
     var start = app.getPeriod();
     var players = [3, 1, 5, 8];
-    app.user.getPlayersGamesCountInPeriod(end, start, players, function (err, ret) {
+
+   /* app.game.drawGame(players, function(err,ret) {
+      res.json(ret)
+    });*/
+
+    app.game.getCurrentGame(function (err, ret) {
       res.json(ret);
-    });
+    })
   });
 
   app.server.post('/addgoal', function (req, res) {
@@ -59,5 +68,11 @@ exports.attach = function (options) {
     app.team.findById(req.params.id).then(function (team) {
       res.json(team);
     })
+  });
+  
+  app.server.get('/remove/:id', function(req, res) {
+    app.game.removeGame(req.params.id, function(err, ret) {
+     res.json({message: 'Removed', rer: ret})
+    });
   });
 };

@@ -4,6 +4,7 @@ var WebSocketServer = require('ws').Server;
 app.wss = new WebSocketServer({port: 8080});
 app._ = require('lodash-node');
 app.winston = require('winston');
+app.winston.level = 'debug';
 
 app.conf = require('config').get('app');
 app._ = require('lodash-node');

@@ -8,6 +8,6 @@
       "host": "mysqld"
     },
     "players_in_game": 4,
-    "game_draw_seconds": 120
+    "game_draw_seconds": 20
   }
 }

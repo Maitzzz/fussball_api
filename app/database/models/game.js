@@ -11,7 +11,8 @@ exports.attach = function (options) {
       primaryKey: true
     },
     start: {
-      type: Sequelize.TIME
+      type: Sequelize.TIME,
+      defaultValue: Sequelize.NOW
     },
     end: {
       type: Sequelize.TIME
@@ -24,6 +25,10 @@ exports.attach = function (options) {
     },
     team2: {
       type: Sequelize.INTEGER
+    },
+    active: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: true
     }
   }, {
     classMethods: {
@@ -56,7 +61,7 @@ exports.attach = function (options) {
         }
       },
       getCurrentGame: function (callback) {
-        app.db.query('SELECT id, winning_team FROM games ORDER BY id DESC LIMIT 1', {type: Sequelize.QueryTypes.SELECT}).then(function (res) {
+        app.db.query('SELECT id, winning_team FROM games WHERE active = 1 ORDER BY id DESC LIMIT 1', {type: Sequelize.QueryTypes.SELECT}).then(function (res) {
           if (!app.isEmptyObject(res)) {
             if (res[0].winning_team == null) {
               callback(false, res[0].id);
@@ -159,6 +164,17 @@ exports.attach = function (options) {
           }
         }).then(function (games) {
           callback(false, games);
+        });
+      },
+      removeGame: function(game_id, callback) {
+        app.game.update({
+          active: false
+        }, {
+          where: {
+            id: game_id
+          }
+        }).then(function(ret) {
+          callback(false, ret);
         });
       }
     }
