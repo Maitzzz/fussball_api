@@ -21,6 +21,6 @@ exports.init = function(done) {
   require('http').createServer(this.server).listen(this.conf.port);
   console.log('Listesning on port ' + this.conf.port );
   done();
-}
+};
 
 
