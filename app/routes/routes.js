@@ -45,13 +45,18 @@ exports.attach = function (options) {
     var start = app.getPeriod();
     var players = [3, 1, 5, 8];
 
-   /* app.game.drawGame(players, function(err,ret) {
+  /*  app.game.drawGame(players, function(err,ret) {
       res.json(ret)
-    });*/
+    });
+*/
+    /*app.game.getCurrentGame(function (err, ret) {
+      res.json(ret);
+    })*/
 
-    app.game.getCurrentGame(function (err, ret) {
+    app.user.validateUser(1, function (err, ret) {
       res.json(ret);
     })
+
   });
 
   app.server.post('/addgoal', function (req, res) {

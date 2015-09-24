@@ -68,6 +68,15 @@ exports.attach = function (options) {
             });
           }
         });
+      },
+      validateUser: function(uid, callback) {
+        app.user.findById(1).then(function(ret) {
+          if (ret == null || !ret.active ) {
+            callback(false, false);
+          } else {
+            callback(false, true);
+          }
+        });
       }
 
     }

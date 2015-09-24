@@ -11,11 +11,10 @@ exports.attach = function (options) {
       primaryKey: true
     },
     start: {
-      type: Sequelize.TIME,
-      defaultValue: Sequelize.NOW
+      type: Sequelize.DATE
     },
     end: {
-      type: Sequelize.TIME
+      type: Sequelize.DATE
     },
     winning_team: {
       type: Sequelize.INTEGER
@@ -123,7 +122,8 @@ exports.attach = function (options) {
       },
       setWinningTeam: function (game, team, callback) {
         app.game.update({
-          winning_team: team
+          winning_team: team,
+          end: new Date()
         }, {
           where: {
             id: game
