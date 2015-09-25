@@ -11,7 +11,6 @@ app._ = require('lodash-node');
 
 app.use(require('./database/database.js'));
 app.use(require('./server/server.js'));
-app.use(require('./server/drawService.js'));
 app.use(require('./server/wss.js'));
 
 app.init(function (err) {

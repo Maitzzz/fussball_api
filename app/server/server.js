@@ -8,21 +8,21 @@ exports.attach = function (options) {
   var MySqlStore = require('express-mysql-session');
   var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
   var passport = require('passport');
-
   app.passport = require('passport');
 
   app.server = express();
 
   app.server.use(session({
-    secret: 'keyboard cat',
-    resave: true,
-    saveUninitialized: true,
+    secret: 'thisismysectetkey',
+    resave: false,
+    saveUninitialized: false,
     store: new MySqlStore(app.conf.db)
   }));
 
+  app.server.use(bodyParser.json());
+
   app.server.use(passport.initialize());
   app.server.use(passport.session());
-  app.use(require('../routes/routes.js'));
 
   passport.use(new GoogleStrategy(app.conf.auth, function(accessToken, refreshToken, profile, done) {
       console.log(profile)
@@ -58,6 +58,10 @@ exports.attach = function (options) {
       done(null, user.values);
     });
   });
+
+  app.use(require('../routes/routes.js'));
+  app.use(require('../server/drawService.js'));
+
 };
 
 exports.init = function(done) {

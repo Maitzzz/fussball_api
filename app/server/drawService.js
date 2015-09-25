@@ -62,30 +62,33 @@ exports.attach = function (options) {
   });
 
   app.server.post('/add-player', function (req, res) {
-    var player = req.body.player;
+    var player = req.body;
+    console.log(player)
 
     if (app.timer_on) {
 
       if (player != undefined) {
-        var player_index = app._.indexOf(players, player);
 
-        if (player_index == -1) {
+        app.user.validateUser(player, function (err, ret) {
+          if (ret) {
+            var player_index = app._.indexOf(players, player);
 
-          // todo create user adding validate
+            if (player_index == -1) {
 
-          players.push(player);
+              // todo create user adding validate
 
-          app.winston.log('Player ' + player + ' added in draw');
+              players.push(player);
 
-          res.json({type: 'add', message: 'Player ' + player + ' added to game'});
-        }
-        else {
-          delete player[player_index];
-          res.json({type: 'remove', message: 'Player ' + player + ' removed'});
-        }
-      }
-      else {
-        res.status(400).json({message: 'Player is not set!'});
+              app.winston.log('Player ' + player + ' added in draw');
+
+              res.json({type: 'add', message: 'Player ' + player + ' added to game'});
+            }
+            else {
+              delete player[player_index];
+              res.json({type: 'remove', message: 'Player ' + player + ' removed'});
+            }
+          }
+        });
       }
     }
     else {
