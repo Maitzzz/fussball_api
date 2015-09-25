@@ -1,6 +1,8 @@
 exports.attach = function (options) {
   var app = this;
   var _ = require('lodash-node');
+  var passport = require('passport');
+
 
   app.server.get('/games', function (req, res, next) {
     app.game.findAll({
@@ -67,6 +69,12 @@ exports.attach = function (options) {
         res.json({no_error: "no_error"});
       }
     })
+  });
+
+  app.server.get('/auth/google', passport.authenticate('google', {scope: 'https://www.googleapis.com/auth/userinfo.email'}) );
+
+  app.server.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function(req, res) {
+    res.redirect('/');
   });
 
   app.server.get('/team/:id', function (req, res) {

@@ -14,10 +14,12 @@ exports.attach = function (options) {
       unique: true
     },
     type: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      defaultValue: 2
     },
     active: {
-      type: Sequelize.BOOLEAN
+      type: Sequelize.BOOLEAN,
+      defaultValue: true
     }
   }, {
     classMethods: {
@@ -42,27 +44,37 @@ exports.attach = function (options) {
       },
       getPlayersGamesCountInPeriod: function(end, start, players, callback) {
         app.game.getGames(start, end, function (err, games) {
+
           if (!err) {
             var teams = [];
+
             eachAsync(games.rows, function (item, index, done) {
               app.team.findById(item.team1).then(function (team1) {
+
                 teams.push(team1.player_one);
                 teams.push(team1.player_two);
+
                 app.team.findById(item.team2).then(function (team2) {
+
                   teams.push(team2.player_one);
                   teams.push(team2.player_two);
                   done();
+
                 });
               });
             }, function (error) {
+
               var players_swap = app.compressArray(teams);
+
               app._.forEach(players, function(player) {
+
                 if(app._.find(players_swap , { player: player}) == undefined) {
                   players_swap .push({
                     player: player,
                     count:0
                   });
                 }
+
               });
               callback(error, players_swap);
             });
@@ -70,7 +82,9 @@ exports.attach = function (options) {
         });
       },
       validateUser: function(uid, callback) {
-        app.user.findById(1).then(function(ret) {
+
+        app.user.findById(uid).then(function(ret) {
+
           if (ret == null || !ret.active ) {
             callback(false, false);
           } else {
@@ -78,7 +92,6 @@ exports.attach = function (options) {
           }
         });
       }
-
     }
   });
 };
