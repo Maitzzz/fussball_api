@@ -11,7 +11,8 @@ exports.attach = function (options) {
     },
     email: {
       type: Sequelize.STRING,
-      unique: true
+      unique: true,
+      allowNull: false
     },
     type: {
       type: Sequelize.INTEGER,
@@ -20,6 +21,10 @@ exports.attach = function (options) {
     active: {
       type: Sequelize.BOOLEAN,
       defaultValue: true
+    },
+    password: {
+      type: Sequelize.STRING,
+      allowNull: false
     }
   }, {
     classMethods: {

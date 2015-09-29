@@ -2,7 +2,7 @@ exports.attach = function (options) {
   var app = this;
   var _ = require('lodash-node');
   var passport = require('passport');
-
+  app.server.set('superSecret', app.conf.secret);
 
   app.server.get('/games', function (req, res, next) {
     app.game.findAll({
@@ -42,20 +42,36 @@ exports.attach = function (options) {
     });
   });
 
-  app.server.get('/test', function (req, res) {
+  app.server.post('/auth', function(req, res) {
+
+    app.user.findOne({
+      where: {
+        email: req.body.email,
+        password: req.body.password
+      }
+    }).then(function(user) {
+      if (user != null) {
+        var token = app.jwt.sign(user, app.server.get('superSecret'), {
+          expiresInMinutes: 1440
+        });
+        res.json(token);
+      } else {
+        res.status(401).json({message: 'authentication failed'});
+      }
+    });
+  });
+
+  app.server.get('/test', app.authUser, function (req, res) {
     var end = new Date();
     var start = app.getPeriod();
     var players = [3, 1, 5, 8];
 
-  /*  app.game.drawGame(players, function(err,ret) {
-      res.json(ret)
-    });
-      res.json(ret);
-    })*/
+  /*app.user.create({
+      email: 'mait@fenomen.ee',
+      password: 'Kalamaja12'
+    });*/
 
-    console.log();
-    res.json(req.isAuthenticated());
-
+   res.json({message: 'Passed!'});
   });
 
   app.server.post('/addgoal', function (req, res) {
@@ -66,12 +82,6 @@ exports.attach = function (options) {
         res.json({no_error: "no_error"});
       }
     })
-  });
-
-  app.server.get('/auth/google', passport.authenticate('google', {scope: 'https://www.googleapis.com/auth/userinfo.email'}) );
-
-  app.server.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), function(req, res) {
-    res.redirect('/');
   });
 
   app.server.get('/team/:id', function (req, res) {
