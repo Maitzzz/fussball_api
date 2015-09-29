@@ -50,14 +50,11 @@ exports.attach = function (options) {
   /*  app.game.drawGame(players, function(err,ret) {
       res.json(ret)
     });
-*/
-    /*app.game.getCurrentGame(function (err, ret) {
       res.json(ret);
     })*/
 
-    app.user.validateUser(1, function (err, ret) {
-      res.json(ret);
-    })
+    console.log();
+    res.json(req.isAuthenticated());
 
   });
 

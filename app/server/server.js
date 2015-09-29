@@ -25,10 +25,8 @@ exports.attach = function (options) {
   app.server.use(passport.session());
 
   passport.use(new GoogleStrategy(app.conf.auth, function(accessToken, refreshToken, profile, done) {
-      console.log(profile)
-    var email = profile._json.emails[0].value;
-    console.log('====================================')
-    console.log(email)
+    console.log(accessToken);
+    var email = profile._json.emails[0].value;1
     app.user.findOrCreate({
       where: {
         email: email
