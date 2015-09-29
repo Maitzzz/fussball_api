@@ -2,11 +2,12 @@ exports.attach = function (options) {
   var app = this;
   var _ = require('lodash-node');
   var passport = require('passport');
+  var passwordHash = require('password-hash');
   app.server.set('superSecret', app.conf.secret);
 
   app.server.get('/games', function (req, res, next) {
     app.game.findAll({
-      where:{
+      where: {
         active: true
       }
     }).then(function (games) {
@@ -42,23 +43,34 @@ exports.attach = function (options) {
     });
   });
 
-  app.server.post('/auth', function(req, res) {
+  app.server.post('/auth', function (req, res) {
+    var email = req.body.email;
+    var password = req.body.password;
 
-    app.user.findOne({
-      where: {
-        email: req.body.email,
-        password: req.body.password
-      }
-    }).then(function(user) {
-      if (user != null) {
-        var token = app.jwt.sign(user, app.server.get('superSecret'), {
-          expiresInMinutes: 1440
-        });
-        res.json(token);
-      } else {
-        res.status(401).json({message: 'authentication failed'});
-      }
-    });
+    if (email && password) {
+      app.user.findOne({
+        where: {
+          email: req.body.email
+        }
+      }).then(function (user) {
+        if (user != null) {
+          if (passwordHash.verify(password,user.password)) {
+            var token = app.jwt.sign(user, app.server.get('superSecret'), {
+              expiresInMinutes: 1440
+            });
+
+            res.json(token);
+          } else {
+            res.status(401).json({message: 'Wrong password!'})
+          }
+        } else {
+          res.status(401).json({message: 'authentication failed, no user'});
+        }
+      });
+    } else {
+      res.state(403).json({message: 'No password or email!'})
+    }
+
   });
 
   app.server.get('/test', app.authUser, function (req, res) {
@@ -66,18 +78,17 @@ exports.attach = function (options) {
     var start = app.getPeriod();
     var players = [3, 1, 5, 8];
 
-  /*app.user.create({
-      email: 'mait@fenomen.ee',
-      password: 'Kalamaja12'
-    });*/
+    /*app.user.create({
+     email: 'mait@fenomen.ee',
+     password: 'Kalamaja12'
+     });*/
 
-   res.json({message: 'Passed!'});
+    res.json({message: 'Passed!'});
   });
 
   app.server.post('/addgoal', function (req, res) {
     app.goal.goalScored(req.body.team, req.body.owner, function (err, ret) {
       if (err) {
-        res.json({error: "error"});
       } else {
         res.json({no_error: "no_error"});
       }
@@ -89,10 +100,26 @@ exports.attach = function (options) {
       res.json(team);
     })
   });
-  
-  app.server.get('/remove/:id', function(req, res) {
-    app.game.removeGame(req.params.id, function(err, ret) {
-     res.json({message: 'Removed', rer: ret})
+
+  app.server.get('/remove/:id', function (req, res) {
+    app.game.removeGame(req.params.id, function (err, ret) {
+      res.json({message: 'Removed', rer: ret})
     });
+  });
+
+  app.server.post('/register', function(req, res) {
+    var password = req.body.password;
+    var email = req.body.email;
+
+    if (password && email) {
+      app.user.create({
+        "email": email,
+        "password": passwordHash.generate(password)
+      }).then(function(user) {
+        res.json({success: true, message: 'user ' + email + ' created'});
+      });
+    } else {
+      res.status(403).json({message: 'No password or email!'})
+    }
   });
 };

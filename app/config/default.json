@@ -13,6 +13,7 @@
       "clientID": "639956611810-6gdf53cm5el1i51grbqufq66bshirhs6.apps.googleusercontent.com",
       "clientSecret": "95HkdBP7emMP_MyEFJDaukJy",
       "callbackURL": "http://127.0.0.1:4040/auth/google/callback"
-    }
+    },
+    "secret": "siinpeabolemamingisecret"
   }
 }
