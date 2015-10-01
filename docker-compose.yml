@@ -1,6 +1,7 @@
 node:
   ports:
      - "80"
+     - "4444:4444"
   image: mroosvalt/docker-nodemon
   working_dir: /app
   volumes:

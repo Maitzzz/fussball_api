@@ -1,7 +1,7 @@
 var broadway = require('broadway');
 var app = new broadway.App();
 var WebSocketServer = require('ws').Server;
-app.wss = new WebSocketServer({port: 8080});
+app.wss = new WebSocketServer({port: 4444});
 app._ = require('lodash-node');
 app.winston = require('winston');
 app.winston.level = 'debug';
