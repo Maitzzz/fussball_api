@@ -4,6 +4,9 @@ exports.attach = function (options) {
   var express = require('express');
   var _ = require('lodash-node');
 
+  app.ws = require('websocket.io');
+  app.wss = new ws.Server();
+
   app.jwt = require('jsonwebtoken');
 
   app.server = express();

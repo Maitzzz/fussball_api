@@ -112,7 +112,6 @@ app.pushMessages = function(data) {
   switch (data.driver) {
 
     case 'websocket':
-      app.wss.broadcast(data.payload);
       break;
   }
 };
