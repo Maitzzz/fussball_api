@@ -1,6 +1,6 @@
 {
   "app": {
-    "port": 4040,
+    "port": 80f,
     "db": {
       "database": "test",
       "user": "root",

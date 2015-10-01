@@ -22,8 +22,8 @@ exports.attach = function (options) {
   });
 
   app.server.post('/newgame', function (req, res) {
-    //todo parse user and check if valid, array_unique
-    var players = req.body.players;
+    //todo parse user and check if oi
+    var players = app._.uniq(req.body.players);
     if (players != undefined) {
       app.game.drawGame(players, function (err, gameData) {
         if (err) {
@@ -73,17 +73,12 @@ exports.attach = function (options) {
 
   });
 
-  app.server.get('/test', app.authUser, function (req, res) {
+  app.server.get('/test', function (req, res) {
     var end = new Date();
     var start = app.getPeriod();
-    var players = [3, 1, 5, 8];
+    var players = [3, 1, 5, 8,8,9,9,9,6,6,3,4,2];
 
-    /*app.user.create({
-     email: 'mait@fenomen.ee',
-     password: 'Kalamaja12'
-     });*/
-
-    res.json({message: 'Passed!'});
+    res.json('dasa')
   });
 
   app.server.post('/addgoal', function (req, res) {

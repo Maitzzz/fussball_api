@@ -1,33 +1,43 @@
 node:
   ports:
-    - "4040:4040"
-  image: mroosval/nodemon
+     - "80"
+  image: mroosvalt/docker-nodemon
   working_dir: /app
   volumes:
     - ./app:/app
   links:
-    - mysqld
-mysqld:
-  image: fenomen/mysqld:latest
-  hostname: mysqld
+    - mysql
+  environment:
+    - VHOST_PRIMARY_SERVICE=True
+    - VHOST_PROJECT_NAME=fussball
+    - VHOST_SERVICE_NAME=node
+    - VHOST_VERSION_FILE_URL=https://github.com/Maitzzz/fussball_api/blob/master/Dockerfile
+    - VHOST_REPOSITORY_URL=https://hub.docker.com/r/mroosvalt/docker-nodemon/
+mysql:
+  image: dockerizedrupal/mysql:1.1.0
+  hostname: mysql
   volumes_from:
-    - mysqlddata
+    - mysql-data
   environment:
-    - VHOST=fussball
-mysqlddata:
-  image: fenomen/data:latest
-  hostname: mysqlddata
+    - VHOST_PROJECT_NAME=fussball
+    - VHOST_SERVICE_NAME=mysql
+    - VHOST_VERSION_FILE_URL=https://raw.githubusercontent.com/dockerizedrupal/docker-mysql/master/VERSION.md
+    - VHOST_REPOSITORY_URL=https://hub.docker.com/r/dockerizedrupal/mysql/
+mysql-data:
+  image: dockerizedrupal/data:1.1.0
+  hostname: mysql-data
   volumes:
-    - /mysqld
-  environment:
-    - VHOST=fussball
+    - /mysql
 phpmyadmin:
-  image: fenomen/phpmyadmin:latest
+  image: dockerizedrupal/phpmyadmin:1.1.1
   hostname: phpmyadmin
   ports:
     - "80"
     - "443"
   links:
-    - mysqld
+    - mysql
   environment:
-    - VHOST=fussball
+    - VHOST_PROJECT_NAME=fussball
+    - VHOST_SERVICE_NAME=phpmyadmin
+    - VHOST_VERSION_FILE_URL=https://raw.githubusercontent.com/dockerizedrupal/docker-phpmyadmin/master/VERSION.md
+    - VHOST_REPOSITORY_URL=https://hub.docker.com/r/dockerizedrupal/phpmyadmin/
