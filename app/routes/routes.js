@@ -78,7 +78,10 @@ exports.attach = function (options) {
     var start = app.getPeriod();
     var players = [3, 1, 5, 8,8,9,9,9,6,6,3,4,2];
 
-    res.json('dasa')
+    app.pushMessages('websocket', {message: 'Message'});
+    res.json('ds');
+
+
   });
 
   app.server.post('/addgoal', function (req, res) {

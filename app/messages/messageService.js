@@ -4,7 +4,7 @@
 exports.attach = function (options) {
   var app = this;
 
-  app.messages.send = function(driver, conf, message) {
+  app.messages.send = function(driver, conf, payload) {
     switch (driver) {
       case 'timer':
 

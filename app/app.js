@@ -105,13 +105,11 @@ app.isEmptyObject  = function(obj) {
 };
 
 // todo find a way to create a module
-app.pushMessages = function(data) {
+app.pushMessages = function(driver, data) {
  // data consist which driver it sends, payload, data etc.
-  var driver = data.driver;
-
-  switch (data.driver) {
-
+  switch (driver) {
     case 'websocket':
+      app.wss.broadcast(data);
       break;
   }
 };

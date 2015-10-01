@@ -18,6 +18,7 @@ exports.attach = function (options) {
           time--;
 
           console.log(time);
+          app.pushMessages('websocket', { time_left: time });
 
           if (time <= 0) {
             app.game_timer_ended(function (err, ret) {
@@ -29,14 +30,13 @@ exports.attach = function (options) {
               }
               else {
                 var message = {
-                  driver: 'websocket',
                   type: 'system',
                   payload: {
                     message: 'game_drawn'
                   }
                 };
 
-                app.pushMessages(message);
+                app.pushMessages('websocket', message);
               }
             });
 

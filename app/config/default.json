@@ -1,10 +1,10 @@
 {
   "app": {
-    "port": 80f,
+    "port": 80,
     "db": {
       "database": "test",
-      "user": "root",
-      "password": "root",
+      "user": "container",
+      "password": "container",
       "host": "mysqld"
     },
     "players_in_game": 4,
