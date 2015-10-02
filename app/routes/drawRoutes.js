@@ -5,60 +5,23 @@ exports.attach = function (options) {
   var players = [];
   var time = 0;
   app.timer_on = false;
+
+  var drawService = require('../services/drawService.js');
   //todo create class for methods keep only  enpoints in this file.
 
   app.server.get('/start-draw', function (req, res, next) {
-    app.game.getCurrentGame(function (err, ret) {
-
-      if (!ret && !app.timer_on) {
-        time = app.conf.game_draw_seconds;
-
-        var i = setInterval(function () {
-          app.timer_on = true;
-          time--;
-
-          console.log(time);
-          app.pushMessages('websocket', { time_left: time });
-
-          if (time <= 0) {
-            app.game_timer_ended(function (err, ret) {
-              console.log(err);
-              console.log(ret);
-
-              if (err) {
-                app.winston.log('info', 'Error occurred in timer_ended function');
-              }
-              else {
-                var message = {
-                  type: 'system',
-                  payload: {
-                    message: 'game_drawn'
-                  }
-                };
-
-                app.pushMessages('websocket', message);
-              }
-            });
-
-            app.timer_on = false;
-            time = 0;
-            clearInterval(i);
-          }
-        }, 1000);
-
-        res.json({message: 'Draw started'});
-      } else {
-        res.status(400).json({message: 'Game or Draw is on!'});
-      }
-    })
+   var test = drawService.drawGame();
+    console.log(test);
   });
 
   app.server.get('/timer', function (req, res) {
-    if (app.timer_on && time) {
-      res.json(time);
-    } else {
-      res.status(400).json({message: 'Timer has not started!'});
-    }
+    drawService.getTime(function(err, ret) {
+      if (err) {
+        res.status(err).json(ret);
+      } else {
+        res.json(ret);
+      }
+    });
   });
 
   app.server.post('/add-player', function (req, res) {

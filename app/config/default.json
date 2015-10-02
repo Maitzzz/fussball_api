@@ -5,7 +5,7 @@
       "database": "test",
       "user": "container",
       "password": "container",
-      "host": "mysqld"
+      "host": "mysql"
     },
     "players_in_game": 4,
     "game_draw_seconds": 50,

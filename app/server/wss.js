@@ -3,8 +3,8 @@ exports.attach = function (options) {
 
   app.wss.broadcast = function broadcast(data) {
     for(var i in this.clients) {
-      this.clients[i].send(data);
-      console.log('SEND dATA')
+      this.clients[i].send(JSON.stringify(data));
+      app.winston.log('info', 'Websocket message sent', data, i);
     }
   };
 };

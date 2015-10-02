@@ -78,7 +78,8 @@ exports.attach = function (options) {
     var start = app.getPeriod();
     var players = [3, 1, 5, 8,8,9,9,9,6,6,3,4,2];
 
-    app.pushMessages('websocket', {message: 'Message'});
+
+    app.pushMessages('websocket', { message: 'Message'});
     res.json('ds');
 
 

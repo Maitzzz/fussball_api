@@ -1,7 +1,6 @@
 var broadway = require('broadway');
 var app = new broadway.App();
-var WebSocketServer = require('ws').Server;
-app.wss = new WebSocketServer({port: 4444});
+
 app._ = require('lodash-node');
 app.winston = require('winston');
 app.winston.level = 'debug';
@@ -17,7 +16,7 @@ app.init(function (err) {
   if (err) console.log(err);
 });
 
-app.findKey = function(obj, value) {
+app.findKey = function (obj, value) {
   var key;
 
   app._.each(obj, function (v, k) {
@@ -31,14 +30,14 @@ app.findKey = function(obj, value) {
 
 //kui selle kuu esimene esmaspäev on möödas(on väiksem) kui antud hetk, võta selle kuu oma. Kui ei võta eelmise oma.
 // todo Write it more generic
-app.getPeriod = function() {
+app.getPeriod = function () {
   var start;
   var now = new Date();
 
   if (app.firstMonday(now.getMonth(), now.getFullYear()) < now) {
     start = app.firstMonday(now.getMonth(), now.getFullYear());
   } else {
-    start = app.firstMonday(now.getMonth() - 1  , now.getFullYear());
+    start = app.firstMonday(now.getMonth() - 1, now.getFullYear());
   }
 
   return start;
@@ -64,7 +63,7 @@ app.firstMonday = function (month, year) {
   return d
 };
 
-app.compressArray = function(original) {
+app.compressArray = function (original) {
 
   var compressed = [];
   // make a copy of the input array
@@ -95,7 +94,7 @@ app.compressArray = function(original) {
   return compressed;
 };
 
-app.isEmptyObject  = function(obj) {
+app.isEmptyObject = function (obj) {
   for (var key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
       return false;
@@ -105,11 +104,18 @@ app.isEmptyObject  = function(obj) {
 };
 
 // todo find a way to create a module
-app.pushMessages = function(driver, data) {
- // data consist which driver it sends, payload, data etc.
-  switch (driver) {
-    case 'websocket':
-      app.wss.broadcast(data);
-      break;
+app.pushMessages = function (driver, data) {
+  // data consist which driver it sends, payload, data etc.
+  if (driver, data) {
+    switch (driver) {
+      case 'websocket':
+        app.wss.broadcast(data);
+        break;
+
+      default :
+        return false;
+    }
+  } else {
+    return false;
   }
 };

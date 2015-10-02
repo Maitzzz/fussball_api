@@ -5,7 +5,7 @@ exports.attach = function (options) {
   var _ = require('lodash-node');
 
   var WebSocketServer = require('ws').Server;
-  app.wss = new WebSocketServer({port: 4040});
+  app.wss = new WebSocketServer({port: 4444});
 
   app.jwt = require('jsonwebtoken');
 
@@ -39,7 +39,7 @@ exports.attach = function (options) {
   });
 
   app.use(require('../routes/routes.js'));
-  app.use(require('../server/drawService.js'));
+  app.use(require('../routes/drawRoutes.js'));
 
 };
 

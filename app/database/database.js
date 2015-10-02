@@ -10,12 +10,13 @@ exports.attach = function (options) {
   app.use(require('./models/match.js'));
   app.use(require('./models/game.js'));
 
-/*  setTimeout(function() {
-    app.db.sync({ force: true }).then(function(err, res) {
+ /* setTimeout(function() {
+    app.db.sync().then(function(err, res) {
       if(err) {
-        console.error(err);
+        app.winston.log('error','DATABASE sync error');
+
       } else {
-        console.log(res);
+        app.winston.log('DATABASE sync success');
       }
     })
   }, 5000)*/
