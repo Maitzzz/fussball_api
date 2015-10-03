@@ -119,4 +119,8 @@ exports.attach = function (options) {
       res.status(403).json({message: 'No password or email!'})
     }
   });
+
+  app.server.post('/profile', app.upload.single('avatar'), function(req, res) {
+
+  });
 };

@@ -3,10 +3,27 @@ var app = new broadway.App();
 
 app._ = require('lodash-node');
 app.winston = require('winston');
-app.winston.level = 'debug';
+//app.winston.level = 'debug';
 
 app.conf = require('config').get('app');
 app._ = require('lodash-node');
+
+var multer  = require('multer')
+
+app.use(multer({ dest: './uploads/',
+  rename: function (fieldname, filename) {
+    return filename+Date.now();
+  },
+  onFileUploadStart: function (file) {
+    console.log(file.originalname + ' is starting ...')
+  },
+  onFileUploadComplete: function (file) {
+    console.log(file.fieldname + ' uploaded to  ' + file.path);
+    done=true;
+  }
+}));
+
+
 
 app.use(require('./database/database.js'));
 app.use(require('./server/server.js'));

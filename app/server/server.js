@@ -22,7 +22,6 @@ exports.attach = function (options) {
           return res.json({success: false, message: 'Failed to authenticate token'});
         } else {
           req.decoded = decoded;
-          console.log(decoded);
           next();
         }
       });

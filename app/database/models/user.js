@@ -25,6 +25,9 @@ exports.attach = function (options) {
     password: {
       type: Sequelize.STRING,
       allowNull: false
+    },
+    image: {
+      type: Sequelize.INTEGER
     }
   }, {
     classMethods: {

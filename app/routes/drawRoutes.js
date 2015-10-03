@@ -2,9 +2,6 @@
 
 exports.attach = function (options) {
   var app = this;
-  var players = [];
-  var time = 0;
-  app.timer_on = false;
 
   app.server.get('/start-draw', function (req, res, next) {
     app.draw.drawGame(function (err, ret) {
@@ -28,7 +25,7 @@ exports.attach = function (options) {
 
   app.server.post('/add-player', app.authUser, function (req, res) {
     var player = req.body.player;
-    var user = req.body.user;
+    var user = req.decoded;
 
     if (user.user_id == player || user.type == app.conf.admin) {
       app.draw.addPlayer(player, function (err, ret) {
