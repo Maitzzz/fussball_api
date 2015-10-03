@@ -30,11 +30,9 @@ exports.attach = function (options) {
               }
               else {
                 var message = {
-                  type: 'system',
-                  payload: {
-                    message: 'game_drawn'
-                  }
-                };
+                  type: 'success',
+                  message: 'game_drawn'
+                  };
 
                 app.pushMessages('websocket', message);
               }
@@ -100,8 +98,6 @@ exports.attach = function (options) {
 
             if (player_index == -1) {
 
-              // todo create user adding validate
-
               players.push(player);
 
               app.winston.log('Player ' + player + ' added in draw');
@@ -112,6 +108,8 @@ exports.attach = function (options) {
               delete player[player_index];
               callback(false, {type: 'remove', message: 'Player ' + player + ' removed'});
             }
+          } else {
+            callback(400, { message:'User was is nt eligible to play!'})
           }
         });
       }
