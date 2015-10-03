@@ -143,15 +143,15 @@ exports.attach = function (options) {
                     callback(false, game)
                   });
                 } else {
-                  callback(true, 'Error with proiritizing players');
+                  callback(true, {message : 'Error with proiritizing players'});
                 }
               });
             } else {
-              callback(true, 'Game is alseady running!');
+              callback(true, { message: 'Game is alseady running!'});
             }
           });
         } else {
-          callback(true, 'Not enough players!');
+          callback(true, {message: 'Not enough players!'});
         }
       },
 

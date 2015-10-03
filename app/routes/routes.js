@@ -22,7 +22,7 @@ exports.attach = function (options) {
   });
 
   app.server.post('/newgame', function (req, res) {
-    //todo parse user and check if oi
+    // todo inf user is set add hin automatically to game.
     var players = app._.uniq(req.body.players);
     if (players != undefined) {
       app.game.drawGame(players, function (err, gameData) {
@@ -78,10 +78,8 @@ exports.attach = function (options) {
     var start = app.getPeriod();
     var players = [3, 1, 5, 8,8,9,9,9,6,6,3,4,2];
 
-
     app.pushMessages('websocket', { message: 'Message'});
     res.json('ds');
-
 
   });
 

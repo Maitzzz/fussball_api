@@ -1,5 +1,7 @@
 exports.attach = function (options) {
+  
   var app = this;
+
   var bodyParser = require('body-parser');
   var express = require('express');
   var _ = require('lodash-node');
@@ -38,6 +40,7 @@ exports.attach = function (options) {
     next();
   });
 
+  app.use(require('../services/drawService.js'));
   app.use(require('../routes/routes.js'));
   app.use(require('../routes/drawRoutes.js'));
 

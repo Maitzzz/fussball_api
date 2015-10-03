@@ -8,7 +8,7 @@
       "host": "mysql"
     },
     "players_in_game": 4,
-    "game_draw_seconds": 50,
+    "game_draw_seconds": 20,
     "auth": {
       "clientID": "639956611810-6gdf53cm5el1i51grbqufq66bshirhs6.apps.googleusercontent.com",
       "clientSecret": "95HkdBP7emMP_MyEFJDaukJy",
