@@ -180,5 +180,5 @@ exports.attach = function (options) {
     }
   });
 
-};
+  };
 

@@ -8,22 +8,24 @@ app.winston = require('winston');
 app.conf = require('config').get('app');
 app._ = require('lodash-node');
 
-var multer  = require('multer')
-
-app.use(multer({ dest: './uploads/',
-  rename: function (fieldname, filename) {
-    return filename+Date.now();
+var multer  = require('multer');
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '/app/uploads/')
   },
-  onFileUploadStart: function (file) {
-    console.log(file.originalname + ' is starting ...')
-  },
-  onFileUploadComplete: function (file) {
-    console.log(file.fieldname + ' uploaded to  ' + file.path);
-    done=true;
+  filename: function (req, file, cb) {
+    var getFileExt = function(fileName){
+      var fileExt = fileName.split(".");
+      if( fileExt.length === 1 || ( fileExt[0] === "" && fileExt.length === 2 ) ) {
+        return "";
+      }
+      return fileExt.pop();
+    }
+    cb(null, Date.now() + '.' + getFileExt(file.originalname))
   }
-}));
+});
 
-
+app.upload = multer({ storage: storage })
 
 app.use(require('./database/database.js'));
 app.use(require('./server/server.js'));

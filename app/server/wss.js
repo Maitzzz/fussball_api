@@ -7,5 +7,9 @@ exports.attach = function (options) {
       app.winston.log('info', 'Websocket message sent', data, i);
     }
   };
+
+  app.wss.on('connection', function connection(ws) {
+
+  });
 };
 

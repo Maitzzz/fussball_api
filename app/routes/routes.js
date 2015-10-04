@@ -3,6 +3,8 @@ exports.attach = function (options) {
   var _ = require('lodash-node');
   var passport = require('passport');
   var passwordHash = require('password-hash');
+
+
   app.server.set('superSecret', app.conf.secret);
 
   app.server.get('/games', function (req, res, next) {
@@ -105,6 +107,8 @@ exports.attach = function (options) {
   });
 
   app.server.post('/register', function(req, res) {
+
+    //todo duplicates
     var password = req.body.password;
     var email = req.body.email;
 
@@ -120,7 +124,16 @@ exports.attach = function (options) {
     }
   });
 
-  app.server.post('/profile', app.upload.single('avatar'), function(req, res) {
+  app.server.post('/upload', app.authUser, app.upload.single('file'), function(req, res) {
+    var file = req.file;
+    var user = req.decoded;
 
+    app.file.editUserProfilePicture(file, user, function(err, ret) {
+      if(err) {
+        res.status(err).json(ret);
+      } else {
+        res.json(ret);
+      }
+    })
   });
 };
