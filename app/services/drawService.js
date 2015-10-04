@@ -17,10 +17,11 @@ exports.attach = function (options) {
         time = app.conf.game_draw_seconds;
 
         var i = setInterval(function () {
+          app.pushMessages('websocket', {type: 'status', status: 'timer_on'});
           app.timer_on = true;
           time--;
 
-          app.pushMessages('websocket', {time_left: time});
+          app.pushMessages('websocket', {type: 'timer_data' ,time_left: time});
 
           if (time <= 0) {
             app.draw.game_timer_ended(function (err, ret) {
@@ -31,6 +32,8 @@ exports.attach = function (options) {
                   error_type: 'not_enough_players',
                   message: 'Not enough players!'
                 });
+
+                app.pushMessages('websocket', {type: 'status', status: 'idle'});
               }
             });
 
@@ -74,17 +77,11 @@ exports.attach = function (options) {
         if (err) {
           app.winston.log('Game has been drawn', ret);
 
-          app.getGameDataById(ret, function(err, ret) {
-            var data = {
-              type: 'game_data',
-              data: ret
-            };
-
-            app.pushMessages('websocket', data);
-          });
-
           callback(true, ret);
         } else {
+          app.draw.pushGameData();
+          app.pushMessages('websocket', {type: 'status', status: 'game_on'});
+
           callback(false, ret);
         }
       });
@@ -136,6 +133,17 @@ exports.attach = function (options) {
           callback('idle');
         }
       }
+    });
+  };
+
+  app.draw.pushGameData = function() {
+    app.game.getCurrentGameData(function(err, ret) {
+      var data = {
+        type: 'game_data',
+        data: ret
+      };
+
+      app.pushMessages('websocket', data);
     });
   }
 };

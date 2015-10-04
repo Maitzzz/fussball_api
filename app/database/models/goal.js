@@ -38,12 +38,13 @@ exports.attach = function (options) {
                   app.match.setWinningTeam(match, team, function(err, ret) {
                     app.match.newMatch(function(err,ret) {
                       if (ret == 'match_created') {
+                        app.draw.pushGameData();
                         app.pushMessages('websocket', 'goal_scored_with_new_match');
-                        callback(false, 'goal_scored_with_new_match');
                       }
                     });
                   });
                 } else {
+                  app.draw.pushGameData();
                   app.pushMessages('websocket', 'goal_scored');
                 }
               }).then(function (goal) {
