@@ -60,7 +60,6 @@ exports.attach = function (options) {
             var token = app.jwt.sign(user, app.server.get('superSecret'), {
               expiresInMinutes: 1440
             });
-
             res.json(token);
           } else {
             res.status(401).json({message: 'Wrong password!'})

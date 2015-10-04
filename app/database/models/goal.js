@@ -36,15 +36,23 @@ exports.attach = function (options) {
               }).then(function (count) {
                 if (count == 10) {
                   app.match.setWinningTeam(match, team, function(err, ret) {
-                    app.match.newMatch(function(ret) {
+                    app.match.newMatch(function(err,ret) {
+                      if (ret == 'match_created') {
+                        app.pushMessages('websocket', 'goal_scored_with_new_match');
+                        callback(false, 'goal_scored_with_new_match');
+                      }
                     });
                   });
+                } else {
+                  app.pushMessages('websocket', 'goal_scored');
                 }
               }).then(function (goal) {
                 callback(false, goal);
               });
             });
-          } else (callback(false, false));
+          } else {
+            callback(false, false);
+          }
         });
       }
     }

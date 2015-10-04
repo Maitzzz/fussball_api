@@ -79,13 +79,14 @@ exports.attach = function (options) {
 
             if (winning_team) {
               app.game.setWinningTeam(gameId, winning_team, function(err, ret) {
+                app.pushMessages('websocket', 'winner is set');
                 callback(false, ret);
               });
             } else {
               app.match.create({
                 game: gameId
               }).then(function(newMatch) {
-                callback(false, newMatch);
+                callback(false, 'match_created');
               });
             }
           }

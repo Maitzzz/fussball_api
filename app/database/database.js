@@ -2,7 +2,7 @@ exports.attach = function (options) {
   var app = this;
   var Sequelize = require('sequelize');
 
-  app.db = new Sequelize(app.conf.db.database, app.conf.db.user, app.conf.db.password, { host: app.conf.db.host });
+  app.db = new Sequelize(app.conf.db.database, app.conf.db.user, app.conf.db.password, { host: app.conf.db.host , logging: false});
 
   app.use(require('./models/user.js'));
   app.use(require('./models/goal.js'));

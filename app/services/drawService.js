@@ -32,14 +32,6 @@ exports.attach = function (options) {
                   message: 'Not enough players!'
                 });
               }
-              else {
-                var message = {
-                  type: 'success',
-                  message: 'game_drawn'
-                };
-
-                app.pushMessages('websocket', message);
-              }
             });
 
             app.timer_on = false;
@@ -81,6 +73,16 @@ exports.attach = function (options) {
 
         if (err) {
           app.winston.log('Game has been drawn', ret);
+
+          app.getGameDataById(ret, function(err, ret) {
+            var data = {
+              type: 'game_data',
+              data: ret
+            };
+
+            app.pushMessages('websocket', data);
+          });
+
           callback(true, ret);
         } else {
           callback(false, ret);
