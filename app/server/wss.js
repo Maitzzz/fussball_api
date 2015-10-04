@@ -10,7 +10,12 @@ exports.attach = function (options) {
 
   app.wss.on('connection', function connection(ws) {
     app.draw.getState(function(ret) {
-      app.wss.broadcast(ret);
+      if (ret == 'game_on') {
+          app.pushMessages('websocket', {type: 'status', status: ret})
+          app.draw.pushGameData();
+      } else {
+        app.wss.broadcast(ret);
+      }
     });
   });
 };
