@@ -118,6 +118,8 @@ exports.attach = function (options) {
         "password": passwordHash.generate(password)
       }).then(function(user) {
         res.json({success: true, message: 'user ' + email + ' created'});
+      }).catch(function(err) {
+        res.status(403).json({message: err.errors[0].message});
       });
     } else {
       res.status(403).json({message: 'No password or email!'})
@@ -136,4 +138,5 @@ exports.attach = function (options) {
       }
     })
   });
+
 };

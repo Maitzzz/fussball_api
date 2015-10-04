@@ -21,7 +21,7 @@ exports.attach = function (options) {
     {
       classMethods: {
         editUserProfilePicture: function (file, user, callback) {
-          if (file) {
+          if (file && user) {
             callback(false, {message: 'Upload success!'});
             app.file.create({
               file_name: file.filename,

@@ -26,13 +26,17 @@ exports.attach = function (options) {
             app.draw.game_timer_ended(function (err, ret) {
               if (err) {
                 app.winston.log('info', 'Error occurred in timer_ended function');
-                app.pushMessages('websocket', {type: 'error', error_type: 'not_enough_players', message: 'Not enough players!'});
+                app.pushMessages('websocket', {
+                  type: 'error',
+                  error_type: 'not_enough_players',
+                  message: 'Not enough players!'
+                });
               }
               else {
                 var message = {
                   type: 'success',
                   message: 'game_drawn'
-                  };
+                };
 
                 app.pushMessages('websocket', message);
               }
@@ -59,7 +63,7 @@ exports.attach = function (options) {
     }
   };
 
-  app.draw.getPlayers = function(callback) {
+  app.draw.getPlayers = function (callback) {
     if (time) {
       callback(false, players);
     } else {
@@ -83,11 +87,11 @@ exports.attach = function (options) {
         }
       });
     } else {
-      callback(true, { message :'Not enough players!'});
+      callback(true, {message: 'Not enough players!'});
     }
   };
 
-  app.draw.addPlayer = function(player, callback) {
+  app.draw.addPlayer = function (player, callback) {
     if (app.timer_on) {
 
       if (player != undefined) {
@@ -109,7 +113,7 @@ exports.attach = function (options) {
               callback(false, {type: 'remove', message: 'Player ' + player + ' removed'});
             }
           } else {
-            callback(400, { message:'User was is nt eligible to play!'})
+            callback(400, {message: 'User was is nt eligible to play!'})
           }
         });
       }
@@ -117,5 +121,19 @@ exports.attach = function (options) {
     else {
       callback(400, {message: 'Game has not started'});
     }
+  }
+
+  app.draw.getState = function (callback) {
+    app.game.getCurrentGame(function (err, ret) {
+      if (ret) {
+        callback('game_on');
+      } else {
+        if (app.timer_on) {
+          callback('timer_on');
+        } else {
+          callback('idle');
+        }
+      }
+    });
   }
 };

@@ -9,7 +9,9 @@ exports.attach = function (options) {
   };
 
   app.wss.on('connection', function connection(ws) {
-
+    app.draw.getState(function(ret) {
+      app.wss.broadcast(ret);
+    });
   });
 };
 
