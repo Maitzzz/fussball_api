@@ -17,7 +17,7 @@ exports.attach = function (options) {
         time = app.conf.game_draw_seconds;
 
         var i = setInterval(function () {
-          app.pushMessages('websocket', {type: 'status', status: 'timer_on'});
+          app.pushMessages('websocket', {type: 'status', status: 'timer'});
           app.timer_on = true;
           time--;
 
@@ -33,7 +33,7 @@ exports.attach = function (options) {
                   message: 'Not enough players!'
                 });
 
-                app.pushMessages('websocket', {type: 'status', status: 'idle'});
+                app.pushMessages('websocket', {type: 'status', status: 'players'});
               }
             });
 
@@ -80,7 +80,7 @@ exports.attach = function (options) {
           callback(true, ret);
         } else {
           app.draw.pushGameData();
-          app.pushMessages('websocket', {type: 'status', status: 'game_on'});
+          app.pushMessages('websocket', {type: 'status', status: 'game'});
 
           callback(false, ret);
         }
@@ -125,12 +125,12 @@ exports.attach = function (options) {
   app.draw.getState = function (callback) {
     app.game.getCurrentGame(function (err, ret) {
       if (ret) {
-        callback('game_on');
+        callback('game');
       } else {
         if (app.timer_on) {
-          callback('timer_on');
+          callback('timer');
         } else {
-          callback('idle');
+          callback('players');
         }
       }
     });

@@ -80,7 +80,7 @@ exports.attach = function (options) {
             if (winning_team) {
               app.game.setWinningTeam(gameId, winning_team, function(err, ret) {
                 app.pushMessages('websocket', 'winner is set');
-                app.pushMessages('websocket', {type: 'status', status: 'idle'});
+                app.pushMessages('websocket', {type: 'status', status: 'players'});
                 callback(false, ret);
               });
             } else {
