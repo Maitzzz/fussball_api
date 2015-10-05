@@ -15,6 +15,7 @@ exports.attach = function (options) {
       app.winston.log(ret);
       if (!ret && !app.timer_on) {
         time = app.conf.game_draw_seconds;
+        app.pushMessages('websocket', {type: 'message', message: 'Timer started!'});
 
         var i = setInterval(function () {
           app.pushMessages('websocket', {type: 'status', status: 'timer'});
