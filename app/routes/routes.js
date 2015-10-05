@@ -79,8 +79,9 @@ exports.attach = function (options) {
     var start = app.getPeriod();
     var players = [3, 1, 5, 8,8,9,9,9,6,6,3,4,2];
 
-    app.pushMessages('websocket', { message: 'Message'});
-    res.json('ds');
+    app.game.getGameDataById(16, function(err, ret) {
+      res.json(ret);
+    });
 
   });
 
@@ -107,7 +108,6 @@ exports.attach = function (options) {
 
   app.server.post('/register', function(req, res) {
 
-    //todo duplicates
     var password = req.body.password;
     var email = req.body.email;
 

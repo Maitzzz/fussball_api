@@ -7,6 +7,8 @@ app.winston = require('winston');
 
 app.conf = require('config').get('app');
 app._ = require('lodash-node');
+app.Promise = require("bluebird");
+
 
 var multer  = require('multer');
 var storage = multer.diskStorage({

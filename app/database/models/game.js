@@ -88,13 +88,13 @@ exports.attach = function (options) {
       getGameDataById: function (id, callback) {
         var data = {};
         var matchesData = [];
-        app.game.findById(id).then(function (game) {
+        app.team.getGameDataWithTeams(id, function (err, game) {
           app.match.findAll({
             where: {
               game: id
             }
           }).then(function (matches) {
-            data.game = game.dataValues;
+            data.game = game;
             eachAsync(matches, function (item, index, done) {
               app.goal.findAll({
                 where: {
@@ -143,11 +143,11 @@ exports.attach = function (options) {
                     callback(false, game)
                   });
                 } else {
-                  callback(true, {message : 'Error with proiritizing players'});
+                  callback(true, {message: 'Error with proiritizing players'});
                 }
               });
             } else {
-              callback(true, { message: 'Game is alseady running!'});
+              callback(true, {message: 'Game is alseady running!'});
             }
           });
         } else {
@@ -166,19 +166,19 @@ exports.attach = function (options) {
           callback(false, games);
         });
       },
-      removeGame: function(game_id, callback) {
+      removeGame: function (game_id, callback) {
         app.game.update({
           active: false
         }, {
           where: {
             id: game_id
           }
-        }).then(function(ret) {
+        }).then(function (ret) {
           callback(false, ret);
         });
       }
     }
   });
 
-  };
+};
 
