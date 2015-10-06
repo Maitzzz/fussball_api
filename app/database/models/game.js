@@ -189,14 +189,6 @@ exports.attach = function (options) {
     });
 
     return ret;
-/*
-    app.eachAsync(userGoals, function (item, index, done) {
-
-
-      done();
-    }, function (error) {
-
-    });*/
   }
 };
 
