@@ -88,6 +88,7 @@ exports.attach = function (options) {
   app.server.post('/addgoal', function (req, res) {
     app.goal.goalScored(req.body.team, req.body.owner, function (err, ret) {
       if (err) {
+        res.status(err).json(ret);
       } else {
         res.json({no_error: "no_error"});
       }

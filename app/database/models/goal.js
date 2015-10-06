@@ -20,41 +20,45 @@ exports.attach = function (options) {
   }, {
     classMethods: {
       goalScored: function (team, owner, callback) {
-        //todo error handling
-        app.match.getCurrentMatch(function (err, match) {
-          if (match) {
-            app.goal.create({
-              owner: owner,
-              match: match,
-              team: team
-            }).then(function (data) {
-              app.goal.count({
-                where: {
-                  match: match,
-                  team: team
-                }
-              }).then(function (count) {
-                if (count == 10) {
-                  app.match.setWinningTeam(match, team, function(err, ret) {
-                    app.match.newMatch(function(err,ret) {
-                      if (ret == 'match_created') {
-                        app.draw.pushGameData();
-                        app.pushMessages('websocket', 'goal_scored_with_new_match');
-                      }
+        if (team && owner) {
+          //todo error handling
+          app.match.getCurrentMatch(function (err, match) {
+            if (match) {
+              app.goal.create({
+                owner: owner,
+                match: match,
+                team: team
+              }).then(function (data) {
+                app.goal.count({
+                  where: {
+                    match: match,
+                    team: team
+                  }
+                }).then(function (count) {
+                  if (count == 10) {
+                    app.match.setWinningTeam(match, team, function (err, ret) {
+                      app.match.newMatch(function (err, ret) {
+                        if (ret == 'match_created') {
+                          app.draw.pushGameData();
+                          app.pushMessages('websocket', 'goal_scored_with_new_match');
+                        }
+                      });
                     });
-                  });
-                } else {
-                  app.draw.pushGameData();
-                  app.pushMessages('websocket', 'goal_scored');
-                }
-              }).then(function (goal) {
-                callback(false, goal);
+                  } else {
+                    app.draw.pushGameData();
+                    app.pushMessages('websocket', 'goal_scored');
+                  }
+                }).then(function (goal) {
+                  callback(false, goal);
+                });
               });
-            });
-          } else {
-            callback(false, false);
-          }
-        });
+            } else {
+              callback(false, false);
+            }
+          });
+        } else {
+          callback(400, 'Goal owner or team has not been set')
+        }
       }
     }
   });
