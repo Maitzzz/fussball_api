@@ -75,14 +75,9 @@ exports.attach = function (options) {
   });
 
   app.server.get('/test', function (req, res) {
-    var end = new Date();
-    var start = app.getPeriod();
-    var players = [3, 1, 5, 8,8,9,9,9,6,6,3,4,2];
-
-    app.game.getGameDataById(16, function(err, ret) {
+    app.game.getGameDataById(18, function(err, ret) {
       res.json(ret);
     });
-
   });
 
   app.server.post('/addgoal', function (req, res) {

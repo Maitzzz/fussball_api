@@ -102,13 +102,9 @@ exports.attach = function (options) {
                 }
               }).then(function (goals) {
                 var match = item.dataValues;
-                match.goals = goals;
 
-                var test = _.countBy(goals, function (a) {
-                  return a.team;
-                });
 
-                match.stats = test;
+                match.goals = groupuserGoals(goals);
 
                 matchesData.push(match);
                 done();
@@ -180,5 +176,27 @@ exports.attach = function (options) {
     }
   });
 
+
+  function groupuserGoals(data) {
+    var userGoals = app._.groupBy(data, function(n) {
+      return n.dataValues.owner;
+    });
+
+    var ret = {};
+
+    app._.forEach(userGoals, function(val, key) {
+      ret[key] = val.length;
+    });
+
+    return ret;
+/*
+    app.eachAsync(userGoals, function (item, index, done) {
+
+
+      done();
+    }, function (error) {
+
+    });*/
+  }
 };
 

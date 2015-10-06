@@ -24,10 +24,20 @@ exports.attach = function (options) {
             game = game.dataValues;
             app.team.getTeamUsersData(game.team1, function(err, team1) {
               if(!err) {
-                game.team1 = team1;
+                var team1Data = {};
+
+                team1Data.id = game.team1;
+                team1Data.data = team1;
+
+                game.team1 = team1Data;
 
                 app.team.getTeamUsersData(game.team2, function(err, team2) {
-                  game.team2 = team2;
+                  var team2Data = {};
+
+                  team2Data.id = game.team2;
+                  team2Data.data = team2;
+
+                  game.team2 = team2Data;
 
                   callback(false, game);
                 });
