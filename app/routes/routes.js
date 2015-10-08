@@ -75,9 +75,10 @@ exports.attach = function (options) {
   });
 
   app.server.get('/test', function (req, res) {
-    app.game.getGameDataById(18, function(err, ret) {
-      res.json(ret);
-    });
+    /*app.game.getGameDataById(18, function(err, ret) {
+
+    });*/
+    res.json({success: true});
   });
 
   app.server.post('/addgoal', function (req, res) {

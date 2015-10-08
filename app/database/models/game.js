@@ -103,7 +103,6 @@ exports.attach = function (options) {
               }).then(function (goals) {
                 var match = item.dataValues;
 
-
                 match.goals = groupuserGoals(goals);
 
                 matchesData.push(match);
@@ -175,7 +174,6 @@ exports.attach = function (options) {
       }
     }
   });
-
 
   function groupuserGoals(data) {
     var userGoals = app._.groupBy(data, function(n) {
