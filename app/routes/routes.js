@@ -24,7 +24,7 @@ exports.attach = function (options) {
   });
 
   app.server.post('/newgame', function (req, res) {
-    // todo inf user is set add hin automatically to game.
+    // todo user who started draw should be included in draw automatically
     var players = app._.uniq(req.body.players);
     if (players != undefined) {
       app.game.drawGame(players, function (err, gameData) {
@@ -134,5 +134,4 @@ exports.attach = function (options) {
       }
     })
   });
-
 };
