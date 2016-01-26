@@ -134,4 +134,11 @@ exports.attach = function (options) {
       }
     })
   });
+
+  app.server.get('/user', function(req, res) {
+    app.user.findById(1).then(function (data) {
+      res.json(data);
+    })
+
+  });
 };
