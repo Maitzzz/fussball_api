@@ -14,10 +14,11 @@ exports.attach = function (options) {
   app.server.use(bodyParser.json());
 
   app.authUser = function(req, res, next) {
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+    var token = req.body.token || req.query.token || req.headers['token'];
 
     if (token) {
-      app.jwt.verify(token ,app.server.get('superSecret'), function(err, decoded) {
+      app.jwt.verify(token ,app .server.get('superSecret'), function(err, decoded) {
         if (err) {
           return res.json({success: false, message: 'Failed to authenticate token'});
         } else {
@@ -35,7 +36,7 @@ exports.attach = function (options) {
 
   app.server.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-access-token");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Token");
 
     next();
   });

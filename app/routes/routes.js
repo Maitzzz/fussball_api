@@ -135,10 +135,21 @@ exports.attach = function (options) {
     })
   });
 
-  app.server.get('/user', function(req, res) {
-    app.user.findById(1).then(function (data) {
+  app.server.get('/user', app.authUser, function(req, res) {
+    var user = req.decoded;
+    app.user.findById(user.user_id).then(function (data) {
       res.json(data);
     })
-
   });
+
+  app.server.get('/players', function(req, res) {
+    app.user.findAll({
+      where: {
+        active: true
+      }
+    }).then(function (games) {
+      res.json(games);
+    });
+  });
+
 };
