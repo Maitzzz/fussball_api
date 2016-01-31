@@ -68,6 +68,7 @@ exports.attach = function (options) {
   };
 
   app.draw.game_timer_ended = function (callback) {
+    console.log(players);
     if (players.length >= app.conf.players_in_game) {
       app.winston.log('Players in draw', players);
 

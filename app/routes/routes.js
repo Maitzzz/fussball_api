@@ -146,7 +146,9 @@ exports.attach = function (options) {
     app.user.findAll({
       where: {
         active: true
-      }
+      },
+      attributes : ['email']
+
     }).then(function (games) {
       res.json(games);
     });

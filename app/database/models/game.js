@@ -142,7 +142,7 @@ exports.attach = function (options) {
                 }
               });
             } else {
-              callback(true, {message: 'Game is alseady running!'});
+              callback(true, {message: 'Game is already running!'});
             }
           });
         } else {
