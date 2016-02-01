@@ -8,6 +8,7 @@
       "host": "mysql"
     },
     "players_in_game": 4,
+    "uploads": "uploads",
     "game_draw_seconds": 120,
     "auth": {
       "clientID": "639956611810-6gdf53cm5el1i51grbqufq66bshirhs6.apps.googleusercontent.com",

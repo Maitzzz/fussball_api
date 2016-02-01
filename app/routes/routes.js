@@ -170,8 +170,11 @@ exports.attach = function (options) {
         model: app.file,
         attributes: ['path', 'file_name']
       }]
-    }).then(function (games) {
-      res.json(games);
+    }).then(function (players) {
+      for (var i = 0, len = players.length; i < len; i++) {
+        players[i].file.path = req.protocol + '://' + req.get('host') + '/' + app.conf.uploads + '/' + players[i].file.file_name;
+      }
+      res.json(players);
     });
   });
 
