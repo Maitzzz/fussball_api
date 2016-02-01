@@ -25,16 +25,19 @@ exports.attach = function (options) {
 
   app.server.post('/newgame', function (req, res) {
     // todo user who started draw should be included in draw automatically
+    console.log(req.body.players);
     var players = app._.uniq(req.body.players);
     if (players != undefined) {
       app.game.drawGame(players, function (err, gameData) {
         if (err) {
-          res.status(400).json({message: gameData})
+          console.log(err)
+          res.status(400).json({message: err})
         } else {
           res.json({game: gameData})
         }
       });
     } else {
+      console.log('thiserror')
       res.status(400).json({error: 'Players is not set!'});
     }
   });
@@ -71,14 +74,6 @@ exports.attach = function (options) {
     } else {
       res.state(403).json({message: 'No password or email!'})
     }
-
-  });
-
-  app.server.get('/test', function (req, res) {
-    /*app.game.getGameDataById(18, function(err, ret) {
-
-    });*/
-    res.json({success: true});
   });
 
   app.server.post('/addgoal', function (req, res) {
@@ -165,7 +160,7 @@ exports.attach = function (options) {
       where: {
         active: true
       },
-      attributes : ['email', 'name'],
+      attributes : ['email', 'name', 'user_id'],
       include: [{
         model: app.file,
         attributes: ['path', 'file_name']

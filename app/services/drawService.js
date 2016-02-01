@@ -25,7 +25,6 @@ exports.attach = function (options) {
           time--;
 
             console.log("players")
-            console.log(players)
           app.pushMessages('websocket', {type: 'timer_data' ,time_left: time, players_count: players.length});
 
           if (time <= 0) {
@@ -97,9 +96,8 @@ exports.attach = function (options) {
   };
 
   app.draw.addPlayer = function (player, callback) {
-    console.log(players)
-    if (app.timer_on) {
 
+    if (app.timer_on) {
       if (player != undefined) {
 
         app.user.validateUser(player, function (err, ret) {
