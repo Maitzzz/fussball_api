@@ -153,7 +153,7 @@ exports.attach = function (options) {
         "email": email,
         "name": name
       }).then(function(user) {
-        res.json({success: true, message: 'user ' + email + ' created'});
+        res.json({success: true, message: 'user ' + name + ' created'});
       }).catch(function(err) {
         console.log(err);
         res.status(403).json({message: err.errors[0].message});
@@ -172,8 +172,12 @@ exports.attach = function (options) {
       }]
     }).then(function (players) {
       for (var i = 0, len = players.length; i < len; i++) {
-        players[i].file.path = req.protocol + '://' + req.get('host') + '/' + app.conf.uploads + '/' + players[i].file.file_name;
+        if (players[i].file) {
+          players[i].file.path = req.protocol + '://' + req.get('host') + '/' + app.conf.uploads + '/' + players[i].file.file_name;
+        } else {
+        }
       }
+
       res.json(players);
     });
   });

@@ -3,7 +3,7 @@ exports.attach = function (options) {
   var app = this;
   var Sequelize = require('sequelize');
   app.conf = require('config').get('app');
-  var db = new Sequelize(app.conf.db.database, app.conf.db.user, app.conf.db.password);
+  //var db = new Sequelize(app.conf.db.database, app.conf.db.user, app.conf.db.password);
   app.draw = {};
   var players = [];
   var time = 0;
@@ -12,17 +12,21 @@ exports.attach = function (options) {
 
   app.draw.drawGame = function (callback) {
     app.game.getCurrentGame(function (err, ret) {
+
       app.winston.log(ret);
+
       if (!ret && !app.timer_on) {
         time = app.conf.game_draw_seconds;
         app.pushMessages('websocket', {type: 'message', message: 'Timer started!'});
+        app.pushMessages('websocket', {type: 'status', status: 'timer'});
 
+        app.timer_on = true;
         var i = setInterval(function () {
-          app.pushMessages('websocket', {type: 'status', status: 'timer'});
-          app.timer_on = true;
           time--;
 
-          app.pushMessages('websocket', {type: 'timer_data' ,time_left: time});
+            console.log("players")
+            console.log(players)
+          app.pushMessages('websocket', {type: 'timer_data' ,time_left: time, players_count: players.length});
 
           if (time <= 0) {
             app.draw.game_timer_ended(function (err, ret) {
@@ -93,11 +97,13 @@ exports.attach = function (options) {
   };
 
   app.draw.addPlayer = function (player, callback) {
+    console.log(players)
     if (app.timer_on) {
 
       if (player != undefined) {
 
         app.user.validateUser(player, function (err, ret) {
+          console.log(ret)
           if (ret) {
             var player_index = app._.indexOf(players, player);
 
@@ -110,7 +116,10 @@ exports.attach = function (options) {
               callback(false, {type: 'add', message: 'Player ' + player + ' added to game'});
             }
             else {
-              delete player[player_index];
+              var player_index = app._.indexOf(players, player);
+              delete players[player_index];
+
+              players = cleanArray(players);
               callback(false, {type: 'remove', message: 'Player ' + player + ' removed'});
             }
           } else {
@@ -147,5 +156,15 @@ exports.attach = function (options) {
 
       app.pushMessages('websocket', data);
     });
+  }
+
+  function cleanArray(actual) {
+    var newArray = new Array();
+    for (var i = 0; i < actual.length; i++) {
+      if (actual[i]) {
+        newArray.push(actual[i]);
+      }
+    }
+    return newArray;
   }
 };
