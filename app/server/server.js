@@ -11,6 +11,8 @@ exports.attach = function (options) {
   app.jwt = require('jsonwebtoken');
 
   app.server = express();
+
+  app.server.use("/uploads", express.static('uploads'));
   app.server.use(bodyParser.json());
 
   app.authUser = function(req, res, next) {

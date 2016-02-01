@@ -107,14 +107,17 @@ exports.attach = function (options) {
 
     var password = req.body.password;
     var email = req.body.email;
+    var name = req.body.name;
 
     if (password && email) {
       app.user.create({
         "email": email,
-        "password": passwordHash.generate(password)
+        "password": passwordHash.generate(password),
+        "name": name
       }).then(function(user) {
         res.json({success: true, message: 'user ' + email + ' created'});
       }).catch(function(err) {
+        console.log(err)
         res.status(403).json({message: err.errors[0].message});
       });
     } else {
@@ -142,13 +145,31 @@ exports.attach = function (options) {
     })
   });
 
+  app.server.get('/update_user', app.authUser, function(req, res) {
+    var email = req.body.email;
+    var name = req.body.name;
+
+      app.user.create({
+        "email": email,
+        "name": name
+      }).then(function(user) {
+        res.json({success: true, message: 'user ' + email + ' created'});
+      }).catch(function(err) {
+        console.log(err);
+        res.status(403).json({message: err.errors[0].message});
+      });
+  });
+
   app.server.get('/players', function(req, res) {
     app.user.findAll({
       where: {
         active: true
       },
-      attributes : ['email']
-
+      attributes : ['email', 'name'],
+      include: [{
+        model: app.file,
+        attributes: ['path', 'file_name']
+      }]
     }).then(function (games) {
       res.json(games);
     });

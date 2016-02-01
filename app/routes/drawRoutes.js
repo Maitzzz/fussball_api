@@ -24,19 +24,23 @@ exports.attach = function (options) {
   });
 
   app.server.post('/add-player', app.authUser, function (req, res) {
-    var player = req.body.player;
-    var user = req.decoded;
+    var password = req.body.password;
+    var email = req.body.email;
+    var name = req.body.name;
 
-    if (user.user_id == player || user.type == app.conf.admin) {
-      app.draw.addPlayer(player, function (err, ret) {
-        if (err) {
-          res.status(err).json(ret);
-        } else {
-          res.json(ret);
-        }
-      })
+    if (password && email) {
+      app.user.create({
+        "email": email,
+        "password": passwordHash.generate(password),
+        "name": name
+      }).then(function(user) {
+        res.json({success: true, message: 'user ' + email + ' created'});
+      }).catch(function(err) {
+        console.log(err)
+        res.status(403).json({message: err.errors[0].message});
+      });
     } else {
-      res.status(401).json({message: 'You cant add anybody else than you!'});
+      res.status(403).json({message: 'No password or email!'})
     }
   });
 

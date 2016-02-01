@@ -29,7 +29,7 @@ exports.attach = function (options) {
               content_type: file.mimetype
             }).then(function (ret) {
               app.user.update({
-                image: ret.dataValues.id
+                fileId: ret.dataValues.id
               }, {
                 where: {
                   user_id: user.user_id
@@ -43,4 +43,5 @@ exports.attach = function (options) {
         }
       }
     });
+  app.user.belongsTo(app.file);
 };

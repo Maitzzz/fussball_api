@@ -14,6 +14,10 @@ exports.attach = function (options) {
       unique: true,
       allowNull: false
     },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
     type: {
       type: Sequelize.INTEGER,
       defaultValue: 2
@@ -94,7 +98,6 @@ exports.attach = function (options) {
         });
       },
       validateUser: function(uid, callback) {
-
         app.user.findById(uid).then(function(ret) {
 
           if (ret == null || !ret.active ) {
