@@ -1,9 +1,8 @@
 exports.attach = function (options) {
 
   var app = this;
-  var Sequelize = require('sequelize');
   app.conf = require('config').get('app');
-  //var db = new Sequelize(app.conf.db.database, app.conf.db.user, app.conf.db.password);
+
   app.draw = {};
   var players = [];
   var time = 0;
@@ -12,8 +11,6 @@ exports.attach = function (options) {
 
   app.draw.drawGame = function (callback) {
     app.game.getCurrentGame(function (err, ret) {
-
-      app.winston.log(ret);
 
       if (!ret && !app.timer_on) {
         time = app.conf.game_draw_seconds;
@@ -24,7 +21,6 @@ exports.attach = function (options) {
         var i = setInterval(function () {
           time--;
 
-            console.log("players")
           app.pushMessages('websocket', {type: 'timer_data' ,time_left: time, players_count: players.length});
 
           if (time <= 0) {
@@ -76,7 +72,6 @@ exports.attach = function (options) {
       app.winston.log('Players in draw', players);
 
       app.game.drawGame(players, function (err, ret) {
-        // empty participants array
         players = [];
 
         if (err) {
@@ -129,7 +124,7 @@ exports.attach = function (options) {
     else {
       callback(400, {message: 'Game has not started'});
     }
-  }
+  };
 
   app.draw.getState = function (callback) {
     app.game.getCurrentGame(function (err, ret) {
@@ -154,7 +149,7 @@ exports.attach = function (options) {
 
       app.pushMessages('websocket', data);
     });
-  }
+  };
 
   function cleanArray(actual) {
     var newArray = new Array();
@@ -165,4 +160,5 @@ exports.attach = function (options) {
     }
     return newArray;
   }
+
 };

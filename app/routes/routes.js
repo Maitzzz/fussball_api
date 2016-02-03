@@ -4,7 +4,6 @@ exports.attach = function (options) {
   var passport = require('passport');
   var passwordHash = require('password-hash');
 
-
   app.server.set('superSecret', app.conf.secret);
 
   app.server.get('/games', function (req, res, next) {
@@ -14,26 +13,26 @@ exports.attach = function (options) {
       }
     }).then(function (games) {
       res.json(games);
-    })
+    });
   });
 
   app.server.get('/game', function (req, res, next) {
     app.game.getCurrentGameData(function (err, game) {
       res.json(game);
-    })
+    });
   });
 
   app.server.post('/newgame', function (req, res) {
     // todo user who started draw should be included in draw automatically
-    console.log(req.body.players);
     var players = app._.uniq(req.body.players);
+
     if (players != undefined) {
       app.game.drawGame(players, function (err, gameData) {
         if (err) {
-          console.log(err)
           res.status(400).json({message: err})
         } else {
-          res.json({game: gameData})
+          app.draw.pushGameData();
+          app.pushMessages('websocket', {type: 'status', status: 'game'});
         }
       });
     } else {
@@ -81,7 +80,9 @@ exports.attach = function (options) {
       if (err) {
         res.status(err).json(ret);
       } else {
-        res.json({no_error: "no_error"});
+        res.json({
+          no_error: "no_error"
+        });
       }
     })
   });
@@ -112,7 +113,6 @@ exports.attach = function (options) {
       }).then(function(user) {
         res.json({success: true, message: 'user ' + email + ' created'});
       }).catch(function(err) {
-        console.log(err)
         res.status(403).json({message: err.errors[0].message});
       });
     } else {
@@ -130,7 +130,7 @@ exports.attach = function (options) {
       } else {
         res.json(ret);
       }
-    })
+    });
   });
 
   app.server.get('/user', app.authUser, function(req, res) {
@@ -169,12 +169,10 @@ exports.attach = function (options) {
       for (var i = 0, len = players.length; i < len; i++) {
         if (players[i].file) {
           players[i].file.path = req.protocol + '://' + req.get('host') + '/' + app.conf.uploads + '/' + players[i].file.file_name;
-        } else {
         }
       }
 
       res.json(players);
     });
   });
-
 };

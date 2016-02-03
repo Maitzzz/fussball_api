@@ -43,5 +43,6 @@ exports.attach = function (options) {
         }
       }
     });
+
   app.user.belongsTo(app.file);
 };

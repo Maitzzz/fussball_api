@@ -48,7 +48,6 @@ exports.attach = function (options) {
               if (app._.indexOf(players, val.player) != -1) {
                 inGame.push(val);
               }
-
             });
 
             var temp = app._.sortByOrder(app._.shuffle(inGame), ['count'], ['asc']);
@@ -92,6 +91,7 @@ exports.attach = function (options) {
                 }
 
               });
+
               callback(error, players_swap);
             });
           }

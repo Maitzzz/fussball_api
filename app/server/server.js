@@ -16,11 +16,10 @@ exports.attach = function (options) {
   app.server.use(bodyParser.json());
 
   app.authUser = function(req, res, next) {
-
     var token = req.body.token || req.query.token || req.headers['token'];
 
     if (token) {
-      app.jwt.verify(token ,app .server.get('superSecret'), function(err, decoded) {
+      app.jwt.verify(token ,app.server.get('superSecret'), function(err, decoded) {
         if (err) {
           return res.json({success: false, message: 'Failed to authenticate token'});
         } else {
@@ -46,7 +45,6 @@ exports.attach = function (options) {
   app.use(require('../services/drawService.js'));
   app.use(require('../routes/routes.js'));
   app.use(require('../routes/drawRoutes.js'));
-
 };
 
 exports.init = function(done) {
