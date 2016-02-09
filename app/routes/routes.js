@@ -23,75 +23,28 @@ exports.attach = function (options) {
   });
 
 
-  app.server.get('/games_in_period', function (req, res, next) {
+  app.server.post('/score', function (req, res, next) {
     //todo find a way how to create better query to ger teams.
     var end = new Date();
     var start = app.getPeriod();
-    var ret = [];
+    var period = req.body.period;
 
-    app.game.getGames(start, end, function (err, games) {
-
-      if (!err) {
-        var data = [];
-
-        app.eachAsync(games.rows, function (item, index, done) {
-          app.team.findById(item.team1).then(function (team1) {
-            app.team.findById(item.team2).then(function (team2) {
-
-              var obj = {
-                winning_team: item.winning_team,
-                teams: [team1, team2]
-              };
-
-              data.push(obj);
-              done();
-            });
-          });
-        }, function (error) {
-          var winnings = [];
-          var loses = [];
-          var users = [];
-
-          for (var i = 0; i < data.length; i++) {
-            var winning_team = data[i].winning_team;
-            var teams = data[i].teams;
-
-            for (var j = 0; j < teams.length; j++) {
-              if (teams[j].id == winning_team) {
-                winnings.push(teams[j].player_one);
-                winnings.push(teams[j].player_two);
-              }
-
-              loses.push(teams[j].player_one);
-              loses.push(teams[j].player_two);
-
-              users.push(teams[j].player_one);
-              users.push(teams[j].player_two);
-
-              users = _.uniq(users);
-            }
-
-          }
-
-          winnings = app.compressArray(winnings)
-          loses =  app.compressArray(loses)
-
-          for (var i = 0; i < users.length; i++) {
-
-            var user = {
-              user: users[i],
-              winnings: _.find(winnings, _.matchesProperty('player', 1)).count,
-              loses: _.find(loses, _.matchesProperty('player', 1)).count
-            };
-
-            ret.push(user)
-          }
-
-
-          res.json(ret);
+    switch (period) {
+      case 'all' :
+        app.game.findAndCount().then(function (games) {
+          app.getPlayersScoresFromGames(games, function(data) {
+            res.json(data);
+          })
         });
-      }
-    });
+        break;
+      case 'period' :
+        app.game.getGames(start, end, function (err, games) {
+          app.getPlayersScoresFromGames(games, function(data) {
+            res.json(data);
+          })
+        });
+        break;
+    }
   });
 
   app.server.post('/newgame', function (req, res) {

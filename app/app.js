@@ -1,5 +1,6 @@
 var broadway = require('broadway');
 var app = new broadway.App();
+var _ = require('lodash-node');
 
 
 app._ = require('lodash-node');
@@ -185,3 +186,89 @@ app.DataGrouper.register("sum", function(item) {
     return memo + Number(node.Value);
   }, 0)});
 });
+
+app.getPlayersScoresFromGames = function (games, callback) {
+  var ret = [];
+
+  if (games) {
+    var data = [];
+    app.eachAsync(games.rows, function (item, index, done) {
+      app.team.findById(item.team1).then(function (team1) {
+        app.team.findById(item.team2).then(function (team2) {
+
+          var obj = {
+            winning_team: item.winning_team,
+            teams: [team1, team2]
+          };
+
+          data.push(obj);
+          done();
+        });
+      });
+    }, function (error) {
+      var winnings = [];
+      var loses = [];
+      var users = [];
+
+      for (var i = 0; i < data.length; i++) {
+        var winning_team = data[i].winning_team;
+        var teams = data[i].teams;
+
+        for (var j = 0; j < teams.length; j++) {
+          if (teams[j].id == winning_team) {
+            winnings.push(teams[j].player_one);
+            winnings.push(teams[j].player_two);
+          }
+
+          loses.push(teams[j].player_one);
+          loses.push(teams[j].player_two);
+
+          users.push(teams[j].player_one);
+          users.push(teams[j].player_two);
+
+          users = _.uniq(users);
+        }
+      }
+
+      winnings = app.compressArray(winnings);
+      loses = app.compressArray(loses);
+
+
+      app.eachAsync(users, function (user, index, done) {
+        var userData = {
+          winnings: _.find(winnings, _.matchesProperty('player', user)).count,
+          loses: _.find(loses, _.matchesProperty('player', user)).count
+        };
+
+        app.user.findOne({
+          where: {
+            active: true
+          },
+          attributes : ['email', 'name', 'user_id'],
+          include: [{
+            model: app.file,
+            attributes: ['path', 'file_name']
+          }]
+        });
+
+        app.user.findOne({
+          where: {
+            user_id: user
+          },
+          attributes : ['email', 'name', 'user_id'],
+          include: [{
+            model: app.file,
+            attributes: ['path', 'file_name']
+          }]
+        }).then(function (player) {
+          userData.player = player;
+
+          ret.push(userData);
+          done();
+        });
+      },function (error) {
+        callback(ret);
+      });
+    });
+  }
+};
