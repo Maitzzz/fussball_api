@@ -233,7 +233,6 @@ app.getPlayersScoresFromGames = function (games, callback) {
       winnings = app.compressArray(winnings);
       loses = app.compressArray(loses);
 
-      //score victories *100 / matches played * victories
       app.eachAsync(users, function (user, index, done) {
 
         var wins = _.find(winnings, _.matchesProperty('player', user));
@@ -272,7 +271,7 @@ app.getPlayersScoresFromGames = function (games, callback) {
           done();
         });
       },function (error) {
-        callback(ret);
+        callback(app._.sortByOrder(ret, ['score'], ['desc']));
       });
     });
   }
