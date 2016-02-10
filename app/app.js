@@ -241,7 +241,7 @@ app.getPlayersScoresFromGames = function (games, callback) {
         var userData = {
           winnings: wins.count,
           loses: defeats.count,
-          score: wins.count * 100 / (wins.count + defeats.count) * wins.count
+          score: Math.round(wins.count * 100 / (wins.count + defeats.count) * wins.count)
         };
 
         app.user.findOne({
