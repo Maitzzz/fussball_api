@@ -233,11 +233,16 @@ app.getPlayersScoresFromGames = function (games, callback) {
       winnings = app.compressArray(winnings);
       loses = app.compressArray(loses);
 
-
+      //score victories *100 / matches played * victories
       app.eachAsync(users, function (user, index, done) {
+
+        var wins = _.find(winnings, _.matchesProperty('player', user));
+        var defeats = _.find(loses, _.matchesProperty('player', user));
+
         var userData = {
-          winnings: _.find(winnings, _.matchesProperty('player', user)).count,
-          loses: _.find(loses, _.matchesProperty('player', user)).count
+          winnings: wins.count,
+          loses: defeats.count,
+          score: wins.count * 100 / (wins.count + defeats.count) * wins.count
         };
 
         app.user.findOne({
