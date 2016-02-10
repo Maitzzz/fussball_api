@@ -92,7 +92,7 @@ exports.attach = function (options) {
             res.status(401).json({message: 'Wrong password!'})
           }
         } else {
-          res.status(401).json({message: 'authentication failed, no user'});
+          res.status(401).json({message: 'Authentication failed, no user'});
         }
       });
     } else {

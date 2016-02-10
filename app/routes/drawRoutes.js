@@ -30,8 +30,7 @@ exports.attach = function (options) {
     if (!player) {
       player = user.user_id;
     }
-    console.log(player)
-    console.log(user)
+
     if (user.user_id == player || user.type == app.conf.admin) {
       app.draw.addPlayer(player, function (err, ret) {
         if (err) {

@@ -93,7 +93,6 @@ exports.attach = function (options) {
           }
         });
       }
-
     }
   });
 };
